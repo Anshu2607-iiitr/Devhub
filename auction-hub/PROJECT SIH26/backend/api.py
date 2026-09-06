@@ -277,10 +277,12 @@ def export_projects_csv(
     )
 
 @app.get("/api/analytics/summary")
+@app.get("/api/dashboard/summary")
 def get_summary_analytics():
     """
     Executive summary KPIs for dashboard header and high-level monitoring.
     """
+
     ensure_pipeline()
     projects = pipeline.projects_scored
     if not projects:
