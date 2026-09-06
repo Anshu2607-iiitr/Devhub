@@ -187,8 +187,12 @@ export default function GeospatialMap({ onSelectDistrict }) {
                   <span className="font-bold text-white font-mono text-sm">₹{activePin.total_crores} Cr</span>
                 </div>
                 <div className="p-3 bg-slate-950 rounded-lg border border-slate-800">
-                  <span className="text-slate-500 block text-[10px]">Active Works</span>
-                  <span className="font-bold text-white text-sm">{activePin.total_projects} sanctions</span>
+                  <span className="text-slate-500 block text-[10px]">MoSPI Allocated Limit</span>
+                  <span className="font-bold text-amber-400 font-mono text-sm">₹{activePin.allocated_amount_crores || 14.7} Cr</span>
+                </div>
+                <div className="p-3 bg-slate-950 rounded-lg border border-slate-800">
+                  <span className="text-slate-500 block text-[10px]">Quota Utilization</span>
+                  <span className="font-bold text-emerald-400 font-mono text-sm">{activePin.utilization_pct || 0}%</span>
                 </div>
                 <div className="p-3 bg-slate-950 rounded-lg border border-slate-800">
                   <span className="text-slate-500 block text-[10px]">Critical Flags</span>
@@ -196,13 +200,8 @@ export default function GeospatialMap({ onSelectDistrict }) {
                     {activePin.critical_projects} projects
                   </span>
                 </div>
-                <div className="p-3 bg-slate-950 rounded-lg border border-slate-800">
-                  <span className="text-slate-500 block text-[10px]">Duplicate Alerts</span>
-                  <span className={`font-bold text-sm ${activePin.duplicate_alerts > 0 ? 'text-indigo-400' : 'text-slate-400'}`}>
-                    {activePin.duplicate_alerts} detected
-                  </span>
-                </div>
               </div>
+
 
               {/* Coordinates Info */}
               <div className="text-[11px] text-slate-400 bg-slate-950 p-2.5 rounded-lg border border-slate-800 font-mono flex items-center justify-between">

@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from ml.pipeline import MPLADSAnomalyPipeline
-from data_generator import LOCATIONS_BY_DISTRICT
+from data_generator import LOCATIONS_BY_DISTRICT, OFFICIAL_MPS_DATA, load_official_mps
 
 app = FastAPI(
     title="MPLADS Anomaly Detection & Financial Leakage Prevention API",
@@ -237,7 +237,7 @@ def export_projects_csv(
     writer = csv.writer(output)
     writer.writerow([
         "Project ID", "Title", "Category", "State", "Constituency", "Ward", 
-        "MP Name", "Sanctioned (Lakhs)", "Released (Lakhs)", "Expenditure (Lakhs)",
+        "MP Name", "MP Allocated Limit (Cr)", "Sanctioned (Lakhs)", "Released (Lakhs)", "Expenditure (Lakhs)",
         "Progress (%)", "Risk Score", "Risk Tier", "Primary Anomaly", 
         "Audit Status", "Auditor Notes", "Vendor Name", "Vendor ID", "Sanction Date"
     ])
@@ -251,6 +251,7 @@ def export_projects_csv(
             p.get("district"),
             p.get("ward"),
             p.get("mp_name"),
+            p.get("mp_allocated_limit_crores", 14.70),
             p.get("sanctioned_amount_lakhs"),
             p.get("released_amount_lakhs"),
             p.get("expenditure_lakhs"),
@@ -264,6 +265,7 @@ def export_projects_csv(
             p.get("vendor_id"),
             p.get("sanction_date")
         ])
+
 
     csv_data = output.getvalue()
     return Response(
@@ -328,9 +330,15 @@ def get_summary_analytics():
         for k, v in category_risks.items()
     ]
 
+    total_allocated_official = round(sum(m.get("allocated_amount_crores", 0.0) for m in OFFICIAL_MPS_DATA), 2)
+    overall_utilization = round((total_crores / max(total_allocated_official, 1.0)) * 100.0, 2)
+
     return {
         "total_projects": len(projects),
         "total_monitored_crores": total_crores,
+        "total_official_allocated_crores": total_allocated_official,
+        "total_official_mps": len(OFFICIAL_MPS_DATA),
+        "overall_utilization_pct": overall_utilization,
         "critical_risk_count": critical_count,
         "high_risk_count": high_count,
         "medium_risk_count": medium_count,
@@ -342,10 +350,112 @@ def get_summary_analytics():
         "categories_breakdown": category_list
     }
 
+@app.get("/api/mps")
+def get_official_mps(
+    search: Optional[str] = Query(None),
+    state: Optional[str] = Query(None),
+    sort_by: str = Query("allocated_amount_crores", description="allocated_amount_crores, sanctioned_crores, utilization_pct, critical_count, mp_name"),
+    order: str = Query("desc"),
+    limit: int = Query(50, ge=1, le=600),
+    offset: int = Query(0, ge=0)
+):
+    """
+    Returns official 543 Lok Sabha MPs with their statutory MoSPI allocation limits and real-time monitored project utilization.
+    """
+    ensure_pipeline()
+    
+    mp_stats = {}
+    for p in pipeline.projects_scored:
+        mp_key = p.get("mp_name", "").strip().lower()
+        const_key = p.get("constituency", "").strip().lower()
+        
+        for key in [mp_key, const_key]:
+            if not key:
+                continue
+            if key not in mp_stats:
+                mp_stats[key] = {
+                    "count": 0,
+                    "sanctioned_lakhs": 0.0,
+                    "critical_count": 0,
+                    "duplicate_count": 0,
+                    "avg_scores": []
+                }
+            mp_stats[key]["count"] += 1
+            mp_stats[key]["sanctioned_lakhs"] += p.get("sanctioned_amount_lakhs", 0.0)
+            mp_stats[key]["avg_scores"].append(p.get("fraud_risk_score", 0.0))
+            if p.get("risk_tier") == "Critical":
+                mp_stats[key]["critical_count"] += 1
+            if p.get("duplicate_evaluation", {}).get("has_duplicate_risk"):
+                mp_stats[key]["duplicate_count"] += 1
+
+    all_mps_data = []
+    for mp in OFFICIAL_MPS_DATA:
+        mp_name = mp.get("mp_name", "")
+        constituency = mp.get("constituency", "")
+        alloc_cr = mp.get("allocated_amount_crores", 14.70)
+        alloc_lakhs = mp.get("allocated_amount_lakhs", 1470.0)
+        
+        stats = mp_stats.get(mp_name.strip().lower()) or mp_stats.get(constituency.strip().lower()) or {
+            "count": 0, "sanctioned_lakhs": 0.0, "critical_count": 0, "duplicate_count": 0, "avg_scores": []
+        }
+        
+        s_lakhs = stats["sanctioned_lakhs"]
+        s_crores = round(s_lakhs / 100.0, 2)
+        util_pct = round((s_lakhs / max(alloc_lakhs, 1.0)) * 100.0, 2)
+        avg_score = round(sum(stats["avg_scores"]) / max(len(stats["avg_scores"]), 1), 1) if stats["avg_scores"] else 0.0
+        
+        all_mps_data.append({
+            "sr_no": mp.get("sr_no"),
+            "state": mp.get("state"),
+            "mp_name": mp_name,
+            "constituency": constituency,
+            "allocated_amount_crores": alloc_cr,
+            "allocated_amount_lakhs": alloc_lakhs,
+            "monitored_projects_count": stats["count"],
+            "sanctioned_crores": s_crores,
+            "utilization_pct": util_pct,
+            "critical_count": stats["critical_count"],
+            "duplicate_count": stats["duplicate_count"],
+            "average_risk_score": avg_score,
+            "risk_tier": "Critical" if stats["critical_count"] > 0 or avg_score >= 55 else ("Warning" if avg_score >= 38 else "Normal")
+        })
+
+    filtered = all_mps_data
+    if state and state != "All":
+        filtered = [m for m in filtered if m["state"].lower() == state.lower()]
+        
+    if search:
+        s = search.lower()
+        filtered = [
+            m for m in filtered
+            if s in m["mp_name"].lower()
+            or s in m["constituency"].lower()
+            or s in m["state"].lower()
+        ]
+
+    reverse = (order.lower() == "desc")
+    filtered.sort(key=lambda x: x.get(sort_by, 0), reverse=reverse)
+    
+    total_allocated_all = round(sum(m.get("allocated_amount_crores", 0.0) for m in OFFICIAL_MPS_DATA), 2)
+    total_sanctioned_all = round(sum(m.get("sanctioned_crores", 0.0) for m in all_mps_data), 2)
+    avg_utilization = round((total_sanctioned_all / max(total_allocated_all, 1.0)) * 100.0, 2)
+    unique_states = sorted(list(set(m["state"] for m in OFFICIAL_MPS_DATA)))
+
+    return {
+        "total_mps": len(filtered),
+        "total_official_allocated_crores": total_allocated_all,
+        "total_monitored_crores": total_sanctioned_all,
+        "average_utilization_pct": avg_utilization,
+        "states": unique_states,
+        "offset": offset,
+        "limit": limit,
+        "items": filtered[offset : offset + limit]
+    }
+
 @app.get("/api/analytics/district-heatmap")
 def get_district_heatmap():
     """
-    District and constituency risk index for geographic visualization.
+    District and constituency risk index for geographic visualization, enriched with MoSPI allocation limits.
     """
     districts_map = {}
     for p in pipeline.projects_scored:
@@ -356,11 +466,14 @@ def get_district_heatmap():
                 "state": p.get("state", "India"),
                 "mp_name": p.get("mp_name", ""),
                 "constituency": p.get("constituency", dist),
+                "allocated_amount_crores": p.get("mp_allocated_limit_crores", 14.70),
                 "total_projects": 0,
                 "total_funds_lakhs": 0.0,
                 "risk_scores": [],
                 "critical_count": 0,
-                "duplicate_count": 0
+                "duplicate_count": 0,
+                "lat": p.get("geo_lat", 25.0),
+                "lng": p.get("geo_lng", 82.0)
             }
         d = districts_map[dist]
         d["total_projects"] += 1
@@ -375,23 +488,32 @@ def get_district_heatmap():
     for dist, v in districts_map.items():
         avg_score = round(sum(v["risk_scores"]) / max(len(v["risk_scores"]), 1), 1)
         loc = LOCATIONS_BY_DISTRICT.get(dist, {})
+        lat = loc.get("lat", v.get("lat", 25.0))
+        lng = loc.get("lng", v.get("lng", 80.0))
+        s_crores = round(v["total_funds_lakhs"] / 100.0, 2)
+        alloc_cr = v.get("allocated_amount_crores", 14.70)
+        util_pct = round((s_crores / max(alloc_cr, 0.01)) * 100.0, 1)
+
         result.append({
             "district": dist,
             "state": v["state"],
             "mp_name": v["mp_name"],
             "constituency": v["constituency"],
-            "lat": loc.get("lat", 25.0),
-            "lng": loc.get("lng", 80.0),
+            "lat": lat,
+            "lng": lng,
+            "allocated_amount_crores": alloc_cr,
+            "utilization_pct": util_pct,
             "total_projects": v["total_projects"],
-            "total_crores": round(v["total_funds_lakhs"] / 100.0, 2),
+            "total_crores": s_crores,
             "average_risk_score": avg_score,
             "critical_projects": v["critical_count"],
             "duplicate_alerts": v["duplicate_count"],
-            "risk_tier": "Critical" if avg_score >= 60 else ("Warning" if avg_score >= 40 else "Normal")
+            "risk_tier": "Critical" if avg_score >= 55 else ("Warning" if avg_score >= 38 else "Normal")
         })
 
     result.sort(key=lambda x: x["average_risk_score"], reverse=True)
     return result
+
 
 @app.get("/api/analytics/duplicates")
 def get_duplicate_clusters():

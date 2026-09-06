@@ -209,3 +209,33 @@ class StatisticalEngine:
             "idle_funds_at_risk_lakhs": idle_funds_lakhs,
             "hazard_risk_factor": round(float(hazard_risk_factor), 3)
         }
+
+    def evaluate_allocation_ceiling(
+        self,
+        sanctioned_amount_lakhs: float,
+        mp_allocated_limit_lakhs: float = 1470.0
+    ) -> Dict[str, Any]:
+        """
+        Evaluates project outlay relative to MP's official MoSPI statutory allocation ceiling.
+        Normal individual works rarely exceed 5-10% of total 5-year quota (~₹75L-₹150L).
+        Disproportionate allocations (>20% or >₹300L) trigger ceiling risk.
+        """
+        if mp_allocated_limit_lakhs <= 0:
+            mp_allocated_limit_lakhs = 1470.0
+
+        ratio = sanctioned_amount_lakhs / mp_allocated_limit_lakhs
+        is_ceiling_risk = (ratio > 0.20) or (sanctioned_amount_lakhs > 350.0)
+
+        # Risk factor scaled from 0.0 to 1.0 for outlays consuming 15% to 50%+ of quota
+        risk_factor = 0.0
+        if ratio > 0.15:
+            risk_factor = min(1.0, (ratio - 0.15) / 0.35)
+
+        return {
+            "mp_allocated_limit_lakhs": round(mp_allocated_limit_lakhs, 2),
+            "mp_allocated_limit_crores": round(mp_allocated_limit_lakhs / 100.0, 2),
+            "allocation_consumption_pct": round(ratio * 100.0, 2),
+            "is_ceiling_risk": is_ceiling_risk,
+            "ceiling_risk_factor": round(float(risk_factor), 3)
+        }
+

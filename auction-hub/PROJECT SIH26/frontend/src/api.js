@@ -95,3 +95,18 @@ export async function fetchVendors() {
   if (!res.ok) throw new Error('Failed to fetch vendor analytics');
   return res.json();
 }
+
+export async function fetchMps({ search, state, sortBy = 'allocated_amount_crores', order = 'desc', limit = 50, offset = 0 } = {}) {
+  const params = new URLSearchParams();
+  if (search) params.append('search', search);
+  if (state && state !== 'All') params.append('state', state);
+  params.append('sort_by', sortBy);
+  params.append('order', order);
+  params.append('limit', limit);
+  params.append('offset', offset);
+
+  const res = await fetch(`${BASE_URL}/mps?${params.toString()}`);
+  if (!res.ok) throw new Error('Failed to fetch official MPs');
+  return res.json();
+}
+

@@ -101,6 +101,10 @@ class MPLADSAnomalyPipeline:
 
             dup_eval = self.nlp_detector.find_duplicates(p, top_k=2)
             unsup_eval = self.unsupervised_detector.score_project(p, base)
+            alloc_eval = self.statistical_engine.evaluate_allocation_ceiling(
+                sanctioned_amount_lakhs=float(p.get("sanctioned_amount_lakhs", 0.0)),
+                mp_allocated_limit_lakhs=float(p.get("mp_allocated_limit_lakhs", 1470.0))
+            )
 
             risk_eval = self.risk_scorer.compute_risk_and_explanation(
                 project=p,
@@ -108,7 +112,8 @@ class MPLADSAnomalyPipeline:
                 velocity_eval=vel_eval,
                 hazard_eval=haz_eval,
                 duplicate_eval=dup_eval,
-                unsupervised_eval=unsup_eval
+                unsupervised_eval=unsup_eval,
+                allocation_eval=alloc_eval
             )
 
             scored_item = {**p, **risk_eval}
@@ -131,6 +136,7 @@ class MPLADSAnomalyPipeline:
         released_lakhs = float(proposal.get("released_amount_lakhs", 0.0))
         expenditure_lakhs = float(proposal.get("expenditure_lakhs", 0.0))
         progress_pct = float(proposal.get("physical_progress_pct", 0.0))
+        mp_alloc_lakhs = float(proposal.get("mp_allocated_limit_lakhs", 1470.0))
         s_date = proposal.get("sanction_date", "2026-08-01")
         t_date = proposal.get("target_completion_date", "2026-12-01")
 
@@ -148,6 +154,10 @@ class MPLADSAnomalyPipeline:
         dup_eval = self.nlp_detector.find_duplicates(proposal, top_k=3)
         combined_base = {**cost_eval, **haz_eval}
         unsup_eval = self.unsupervised_detector.score_project(proposal, combined_base)
+        alloc_eval = self.statistical_engine.evaluate_allocation_ceiling(
+            sanctioned_amount_lakhs=amount_lakhs,
+            mp_allocated_limit_lakhs=mp_alloc_lakhs
+        )
 
         risk_eval = self.risk_scorer.compute_risk_and_explanation(
             project=proposal,
@@ -155,10 +165,12 @@ class MPLADSAnomalyPipeline:
             velocity_eval=vel_eval,
             hazard_eval=haz_eval,
             duplicate_eval=dup_eval,
-            unsupervised_eval=unsup_eval
+            unsupervised_eval=unsup_eval,
+            allocation_eval=alloc_eval
         )
 
         return {
             "proposal": proposal,
             "evaluation": risk_eval
         }
+

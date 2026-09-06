@@ -4,6 +4,7 @@ Generates realistic Indian government project records with authentic categories,
 vendors, timelines, and deliberately seeded fraud / leakage anomalies.
 """
 
+import os
 import json
 import random
 from datetime import datetime, timedelta
@@ -77,6 +78,46 @@ CATEGORIES = [
         "expected_duration_days": 210
     }
 ]
+
+# Accurate central coordinates for Indian States & Union Territories
+STATE_CENTROIDS = {
+    "Andhra Pradesh": (15.9129, 79.7400),
+    "Arunachal Pradesh": (28.2180, 94.7278),
+    "Assam": (26.2006, 92.9376),
+    "Bihar": (25.0961, 85.3131),
+    "Chhattisgarh": (21.2787, 81.8661),
+    "Delhi": (28.7041, 77.1025),
+    "Goa": (15.2993, 74.1240),
+    "Gujarat": (22.2587, 71.1924),
+    "Haryana": (29.0588, 76.0856),
+    "Himachal Pradesh": (31.1048, 77.1734),
+    "Jammu And Kashmir": (33.7782, 76.5762),
+    "Jharkhand": (23.6102, 85.2799),
+    "Karnataka": (15.3173, 75.7139),
+    "Kerala": (10.8505, 76.2711),
+    "Ladakh": (34.1526, 77.5771),
+    "Madhya Pradesh": (22.9734, 78.6569),
+    "Maharashtra": (19.7515, 75.7139),
+    "Manipur": (24.6637, 93.9063),
+    "Meghalaya": (25.4670, 91.3662),
+    "Mizoram": (23.1645, 92.9376),
+    "Nagaland": (26.1584, 94.5624),
+    "Odisha": (20.9517, 85.0985),
+    "Punjab": (31.1471, 75.3412),
+    "Rajasthan": (27.0238, 74.2179),
+    "Sikkim": (27.5330, 88.5122),
+    "Tamil Nadu": (11.1271, 78.6569),
+    "Telangana": (18.1124, 79.0193),
+    "Tripura": (23.9408, 91.9882),
+    "Uttar Pradesh": (26.8467, 80.9462),
+    "Uttarakhand": (30.0668, 79.0193),
+    "West Bengal": (22.9868, 87.8550),
+    "Andaman And Nicobar Islands": (11.7401, 92.6586),
+    "Chandigarh": (30.7333, 76.7794),
+    "Lakshadweep": (10.5667, 72.6417),
+    "Puducherry": (11.9416, 79.8083),
+    "The Dadra And Nagar Haveli And Daman And Diu": (20.3974, 72.8328)
+}
 
 LOCATIONS_BY_DISTRICT = {
     "Varanasi": {
@@ -160,10 +201,75 @@ VENDORS = [
     {"id": "VEN-IN-012", "name": "GreenLife Water & Sanitation Labs", "collusion_group": "C"},
 ]
 
+def load_official_mps() -> List[Dict[str, Any]]:
+    candidate_paths = [
+        os.path.join(os.path.dirname(__file__), "official_mps_allocations.json"),
+        os.path.join(os.path.dirname(__file__), "..", "official_mps_allocations.json"),
+        os.path.join(os.getcwd(), "official_mps_allocations.json"),
+        "official_mps_allocations.json"
+    ]
+    for path in candidate_paths:
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    if isinstance(data, list) and len(data) > 0:
+                        return data
+            except Exception:
+                pass
+    return []
+
+OFFICIAL_MPS_DATA = load_official_mps()
+
+def get_mp_constituency_profile(mp_record: Dict[str, Any]) -> Dict[str, Any]:
+    constituency_raw = mp_record.get("constituency", "General").title()
+    clean_name = constituency_raw.replace("(Sc)", "").replace("(St)", "").strip()
+    
+    for d_name, d_info in LOCATIONS_BY_DISTRICT.items():
+        if d_name.lower() in clean_name.lower() or clean_name.lower() in d_name.lower():
+            return {
+                "state": d_info["state"],
+                "mp_name": mp_record.get("mp_name", d_info["mp"]),
+                "constituency": mp_record.get("constituency", clean_name),
+                "district": clean_name,
+                "lat": d_info["lat"],
+                "lng": d_info["lng"],
+                "wards": d_info["wards"],
+                "allocated_amount_crores": mp_record.get("allocated_amount_crores", 14.7),
+                "allocated_amount_lakhs": mp_record.get("allocated_amount_lakhs", 1470.0),
+                "sr_no": mp_record.get("sr_no", 1)
+            }
+
+    state = mp_record.get("state", "Uttar Pradesh")
+    base_lat, base_lng = STATE_CENTROIDS.get(state, (22.5, 78.5))
+    sr = mp_record.get("sr_no", 1)
+    
+    jitter_lat = ((sr * 17) % 160 - 80) * 0.018
+    jitter_lng = ((sr * 31) % 180 - 90) * 0.022
+    
+    wards = [
+        f"{clean_name} Ward {sr % 25 + 1}",
+        f"{clean_name} Gram Panchayat {((sr + 3) % 12) + 1}",
+        f"{clean_name} Rural Approach Block",
+        f"{clean_name} Central Market Chowk",
+        f"{clean_name} Community Cluster {((sr + 7) % 8) + 1}",
+        f"{clean_name} Vikas Nagar Sector 2"
+    ]
+
+    return {
+        "state": state,
+        "mp_name": mp_record.get("mp_name", "Hon'ble MP"),
+        "constituency": mp_record.get("constituency", clean_name),
+        "district": clean_name,
+        "lat": round(base_lat + jitter_lat, 4),
+        "lng": round(base_lng + jitter_lng, 4),
+        "wards": wards,
+        "allocated_amount_crores": mp_record.get("allocated_amount_crores", 14.7),
+        "allocated_amount_lakhs": mp_record.get("allocated_amount_lakhs", 1470.0),
+        "sr_no": sr
+    }
+
 def generate_mplads_dataset(num_samples: int = 500, anomaly_ratio: float = 0.22, seed: int = 42) -> List[Dict[str, Any]]:
-    """
-    Generates a realistic synthetic MPLADS dataset with controlled anomaly rates.
-    """
     random.seed(seed)
     dataset = []
     
@@ -176,22 +282,42 @@ def generate_mplads_dataset(num_samples: int = 500, anomaly_ratio: float = 0.22,
         "cost_inflation",
         "abandoned_idle",
         "burst_velocity",
-        "fund_diversion"
+        "fund_diversion",
+        "allocation_ceiling_breach"
     ]
     
-    # Track duplicates to seed pairs
+    if OFFICIAL_MPS_DATA:
+        selected_mps = [get_mp_constituency_profile(m) for m in OFFICIAL_MPS_DATA]
+    else:
+        selected_mps = []
+        for dist_name, dist_info in LOCATIONS_BY_DISTRICT.items():
+            selected_mps.append({
+                "state": dist_info["state"],
+                "mp_name": dist_info["mp"],
+                "constituency": dist_info["constituency"],
+                "district": dist_name,
+                "lat": dist_info["lat"],
+                "lng": dist_info["lng"],
+                "wards": dist_info["wards"],
+                "allocated_amount_crores": 14.70,
+                "allocated_amount_lakhs": 1470.0,
+                "sr_no": 1
+            })
+
     duplicate_seeds = []
     
     for i in range(num_samples):
         proj_num = i + 1
         proj_id = f"MPLADS-2024-{proj_num:04d}"
         
-        district_name = random.choice(list(LOCATIONS_BY_DISTRICT.keys()))
-        dist_info = LOCATIONS_BY_DISTRICT[district_name]
-        state = dist_info["state"]
-        mp_name = dist_info["mp"]
-        constituency = dist_info["constituency"]
-        ward = random.choice(dist_info["wards"])
+        mp_profile = random.choice(selected_mps)
+        district_name = mp_profile["district"]
+        state = mp_profile["state"]
+        mp_name = mp_profile["mp_name"]
+        constituency = mp_profile["constituency"]
+        ward = random.choice(mp_profile["wards"])
+        mp_alloc_cr = mp_profile["allocated_amount_crores"]
+        mp_alloc_lakhs = mp_profile["allocated_amount_lakhs"]
         
         category_obj = random.choice(CATEGORIES)
         category_name = category_obj["name"]
@@ -207,7 +333,6 @@ def generate_mplads_dataset(num_samples: int = 500, anomaly_ratio: float = 0.22,
         base_min, base_max = category_obj["base_cost_range"]
         sanctioned_amount = round(random.uniform(base_min, base_max), 2)
         
-        # Timeline
         days_offset = random.randint(0, (current_time - start_time).days - 120)
         sanction_date = start_time + timedelta(days=days_offset)
         duration_days = category_obj["expected_duration_days"] + random.randint(-20, 40)
@@ -215,18 +340,15 @@ def generate_mplads_dataset(num_samples: int = 500, anomaly_ratio: float = 0.22,
         
         vendor = random.choice(VENDORS)
         
-        # Decide if this project should be an anomaly
         is_anomaly = False
         anomaly_type = "normal"
         anomaly_details = ""
         
         if len(dataset) < (num_samples - total_anomalies_target):
-            # Normal baseline project
             progress_ratio = min(1.0, max(0.0, (current_time - sanction_date).days / max(1, duration_days)))
             physical_progress = round(min(100.0, progress_ratio * 100 + random.uniform(-10, 10)), 1)
             if physical_progress < 0: physical_progress = 0.0
             
-            # Released funds closely track physical progress
             disbursed_ratio = min(1.0, physical_progress / 100.0 + random.uniform(0.02, 0.15))
             released_amount = round(sanctioned_amount * disbursed_ratio, 2)
             expenditure = round(released_amount * random.uniform(0.85, 0.98), 2)
@@ -234,12 +356,10 @@ def generate_mplads_dataset(num_samples: int = 500, anomaly_ratio: float = 0.22,
             status = "Completed" if physical_progress >= 95 else ("Ongoing" if physical_progress > 5 else "Sanctioned")
             
         else:
-            # Anomaly project
             is_anomaly = True
             anomaly_type = random.choice(anomaly_types_pool)
             
             if anomaly_type == "cost_inflation":
-                # Cost is 2.5x to 4.5x above category baseline
                 multiplier = random.uniform(2.5, 4.2)
                 sanctioned_amount = round(base_max * multiplier, 2)
                 physical_progress = round(random.uniform(20.0, 50.0), 1)
@@ -249,30 +369,26 @@ def generate_mplads_dataset(num_samples: int = 500, anomaly_ratio: float = 0.22,
                 anomaly_details = f"Proposed sanction (₹{sanctioned_amount}L) exceeds regional category baseline (₹{base_max}L) by {round((multiplier-1)*100)}%."
 
             elif anomaly_type == "abandoned_idle":
-                # High fund release (80-100%), but low physical progress (<20%), idle for >200 days
                 sanctioned_amount = round(random.uniform(base_min * 1.2, base_max * 1.5), 2)
                 released_amount = round(sanctioned_amount * random.uniform(0.80, 0.98), 2)
                 expenditure = round(released_amount * 0.92, 2)
                 physical_progress = round(random.uniform(5.0, 18.0), 1)
-                # Stalled timeline
                 sanction_date = current_time - timedelta(days=random.randint(350, 600))
                 target_completion = sanction_date + timedelta(days=category_obj["expected_duration_days"])
                 status = "Delayed"
                 anomaly_details = f"₹{released_amount}L ({round((released_amount/sanctioned_amount)*100)}%) released but physical progress stalled at {physical_progress}% for {(current_time - target_completion).days} days past deadline."
 
             elif anomaly_type == "burst_velocity":
-                # Sudden sanction clustering in 48-hour window
-                burst_day = start_time + timedelta(days=360) # March 28-30 fiscal year end
+                burst_day = start_time + timedelta(days=360)
                 sanction_date = burst_day + timedelta(hours=random.randint(2, 40))
                 sanctioned_amount = round(random.uniform(base_min * 1.5, base_max * 1.8), 2)
                 released_amount = round(sanctioned_amount * 0.5, 2)
                 expenditure = round(released_amount * 0.4, 2)
                 physical_progress = 10.0
                 status = "Sanctioned"
-                anomaly_details = f"Cluster sanction approved during 48-hr velocity surge preceding fiscal year close without technical vetting."
+                anomaly_details = "Cluster sanction approved during 48-hr velocity surge preceding fiscal year close without technical vetting."
 
             elif anomaly_type == "fund_diversion":
-                # Expenditure recorded without corresponding milestone completion
                 sanctioned_amount = round(random.uniform(base_min, base_max), 2)
                 released_amount = round(sanctioned_amount * 0.95, 2)
                 expenditure = round(released_amount * 0.98, 2)
@@ -280,19 +396,27 @@ def generate_mplads_dataset(num_samples: int = 500, anomaly_ratio: float = 0.22,
                 status = "Ongoing"
                 anomaly_details = f"Severe milestone divergence: 98% funds spent while only {physical_progress}% physical works executed."
 
+            elif anomaly_type == "allocation_ceiling_breach":
+                allocation_fraction = random.uniform(0.24, 0.45)
+                sanctioned_amount = round(mp_alloc_lakhs * allocation_fraction, 2)
+                released_amount = round(sanctioned_amount * random.uniform(0.70, 0.90), 2)
+                expenditure = round(released_amount * 0.85, 2)
+                physical_progress = round(random.uniform(8.0, 24.0), 1)
+                status = "Ongoing"
+                anomaly_details = f"Statutory allocation ceiling breach: Proposed single sanction of ₹{sanctioned_amount}L consumes {round(allocation_fraction*100)}% of total MoSPI 5-year quota (₹{mp_alloc_cr} Cr) for Hon'ble MP {mp_name}."
+
             elif anomaly_type == "duplicate_work":
-                # We will link this to a duplicate seed or create one
                 if duplicate_seeds:
                     original_proj = random.choice(duplicate_seeds)
                     district_name = original_proj["district"]
-                    dist_info = LOCATIONS_BY_DISTRICT[district_name]
-                    state = dist_info["state"]
-                    mp_name = dist_info["mp"]
-                    constituency = dist_info["constituency"]
+                    state = original_proj["state"]
+                    mp_name = original_proj["mp_name"]
+                    constituency = original_proj["constituency"]
                     ward = original_proj["ward"]
                     category_name = original_proj["category"]
+                    mp_alloc_cr = original_proj.get("mp_allocated_limit_crores", 14.70)
+                    mp_alloc_lakhs = original_proj.get("mp_allocated_limit_lakhs", 1470.0)
                     
-                    # Create semantic paraphrase
                     orig_title = original_proj["title"]
                     paraphrased_title = orig_title.replace("Installation", "Setting up of").replace("Supply and Installation", "Procurement and Erection").replace("Construction of", "Establishment of").replace("Digging of", "Drilling and Installation of")
                     if paraphrased_title == orig_title:
@@ -305,7 +429,6 @@ def generate_mplads_dataset(num_samples: int = 500, anomaly_ratio: float = 0.22,
                     expenditure = round(released_amount * 0.5, 2)
                     physical_progress = round(random.uniform(10.0, 40.0), 1)
                     
-                    # Pick a DIFFERENT vendor to simulate split-vendor duplicate billing!
                     different_vendors = [v for v in VENDORS if v["id"] != original_proj["vendor_id"]]
                     vendor = random.choice(different_vendors)
                     
@@ -314,7 +437,6 @@ def generate_mplads_dataset(num_samples: int = 500, anomaly_ratio: float = 0.22,
                     status = "Ongoing"
                     anomaly_details = f"Semantic duplicate alert: 89% text & location overlap with existing Project {original_proj['project_id']} awarded to {original_proj['vendor_name']}."
                 else:
-                    # Treat as normal for now and save as duplicate seed
                     anomaly_type = "normal"
                     is_anomaly = False
                     status = "Ongoing"
@@ -332,6 +454,8 @@ def generate_mplads_dataset(num_samples: int = 500, anomaly_ratio: float = 0.22,
             "district": district_name,
             "ward": ward,
             "mp_name": mp_name,
+            "mp_allocated_limit_crores": mp_alloc_cr,
+            "mp_allocated_limit_lakhs": mp_alloc_lakhs,
             "sanctioned_amount_lakhs": sanctioned_amount,
             "released_amount_lakhs": released_amount,
             "expenditure_lakhs": expenditure,
@@ -342,8 +466,8 @@ def generate_mplads_dataset(num_samples: int = 500, anomaly_ratio: float = 0.22,
             "target_completion_date": target_completion.strftime("%Y-%m-%d"),
             "status": status,
             "physical_progress_pct": physical_progress,
-            "geo_lat": dist_info.get("lat", 25.0),
-            "geo_lng": dist_info.get("lng", 82.0),
+            "geo_lat": mp_profile.get("lat", 25.0),
+            "geo_lng": mp_profile.get("lng", 82.0),
             "audit_status": "Pending Review",
             "audit_notes": "",
             "audited_at": None,
@@ -352,7 +476,6 @@ def generate_mplads_dataset(num_samples: int = 500, anomaly_ratio: float = 0.22,
             "ground_truth_details": anomaly_details
         }
         
-        # Save candidates for duplicate pairing
         if not is_anomaly and random.random() < 0.25:
             duplicate_seeds.append(record)
             
@@ -364,4 +487,4 @@ if __name__ == "__main__":
     data = generate_mplads_dataset(num_samples=550, anomaly_ratio=0.20)
     with open("mplads_dataset.json", "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-    print(f"Generated {len(data)} realistic MPLADS project records.")
+    print(f"Generated {len(data)} realistic MPLADS project records tied to 543 Lok Sabha MPs.")

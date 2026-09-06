@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { 
   X, AlertOctagon, AlertTriangle, ShieldCheck, Copy, 
   Clock, TrendingUp, DollarSign, Building2, MapPin, User, 
-  FileText, CheckCircle, Sliders, Printer, Lock, CheckCircle2, RefreshCw 
+  FileText, CheckCircle, Sliders, Printer, Lock, CheckCircle2, RefreshCw, Landmark 
 } from 'lucide-react';
+
 import WhatIfSimulator from './WhatIfSimulator';
 import { updateProjectAction } from '../api';
 
@@ -173,8 +174,35 @@ export default function ProjectDetailModal({ project, onClose, onActionUpdated }
                 </div>
               </div>
 
+              {/* MoSPI Statutory Allocation Quota Context */}
+              <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                <div className="flex items-center space-x-2.5">
+                  <div className="p-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400">
+                    <Landmark className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
+                      MoSPI Statutory MP Quota Context
+                    </span>
+                    <div className="text-slate-200">
+                      Hon'ble MP: <span className="font-semibold text-white">{project.mp_name}</span> • Official Allocation Limit: <span className="font-mono font-bold text-amber-400">₹{project.mp_allocated_limit_crores || 14.70} Cr</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3 text-right">
+                  <div>
+                    <span className="text-[10px] text-slate-500 block">Single Project Share</span>
+                    <span className="font-mono font-bold text-slate-200">
+                      {((project.sanctioned_amount_lakhs / ((project.mp_allocated_limit_crores || 14.70) * 100)) * 100).toFixed(1)}% of 5-Yr Cap
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               {/* Quick Details Metadata Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+
                 <div className="p-3 bg-slate-950 rounded-lg border border-slate-800">
                   <span className="text-slate-500 block mb-1">Constituency / MP</span>
                   <div className="font-semibold text-slate-200 flex items-center gap-1">

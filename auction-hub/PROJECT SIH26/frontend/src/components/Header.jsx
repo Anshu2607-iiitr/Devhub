@@ -1,15 +1,17 @@
 import React from 'react';
-import { ShieldAlert, BarChart3, ListFilter, MapPin, Copy, Building2, Zap, Activity } from 'lucide-react';
+import { ShieldAlert, BarChart3, ListFilter, MapPin, Copy, Building2, Zap, Activity, Landmark } from 'lucide-react';
 
 export default function Header({ activeTab, setActiveTab, totalMonitored, criticalCount, onOpenGlossary }) {
   const tabs = [
     { id: 'overview', label: 'Executive Overview', icon: BarChart3 },
+    { id: 'mps', label: '543 Lok Sabha MPs', icon: Landmark },
     { id: 'projects', label: 'Flagged Projects Explorer', icon: ListFilter, badge: criticalCount },
     { id: 'map', label: 'Constituency Risk Zones', icon: MapPin },
     { id: 'duplicates', label: 'Duplicate Work Clusters', icon: Copy },
     { id: 'vendors', label: 'Vendor Intelligence', icon: Building2 },
     { id: 'simulator', label: 'Live Proposal Sandbox', icon: Zap, highlight: true },
   ];
+
 
   return (
     <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-30 shadow-md backdrop-blur-md bg-opacity-95">

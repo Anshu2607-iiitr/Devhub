@@ -143,6 +143,23 @@ class TestMPLADSAPI(unittest.TestCase):
         text = resp.text
         self.assertIn("Project ID", text)
         self.assertIn("Risk Score", text)
+        self.assertIn("MP Allocated Limit", text)
+
+    def test_get_official_mps(self):
+        resp = self.client.get("/api/mps?limit=10")
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertIn("total_mps", data)
+        self.assertEqual(data["total_mps"], 543)
+        self.assertIn("total_official_allocated_crores", data)
+        self.assertGreater(data["total_official_allocated_crores"], 8000.0)
+        self.assertEqual(len(data["items"]), 10)
+        first = data["items"][0]
+        self.assertIn("mp_name", first)
+        self.assertIn("constituency", first)
+        self.assertIn("allocated_amount_crores", first)
+        self.assertIn("utilization_pct", first)
 
 if __name__ == "__main__":
     unittest.main()
+

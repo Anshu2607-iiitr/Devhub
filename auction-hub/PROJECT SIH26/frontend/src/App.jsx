@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import ExecutiveSummary from './components/ExecutiveSummary';
 import ProjectTable from './components/ProjectTable';
+import MpsExplorer from './components/MpsExplorer';
 import GeospatialMap from './components/GeospatialMap';
 import DistrictHeatmap from './components/DistrictHeatmap';
 import DuplicateClusters from './components/DuplicateClusters';
@@ -91,12 +92,22 @@ export default function App() {
           />
         )}
 
+        {activeTab === 'mps' && (
+          <MpsExplorer
+            onSelectMpConstituency={(constituency) => {
+              setTableTier('All');
+              setActiveTab('projects');
+            }}
+          />
+        )}
+
         {activeTab === 'projects' && (
           <ProjectTable
             initialTier={tableTier}
             onSelectProject={handleSelectProject}
           />
         )}
+
 
         {activeTab === 'map' && (
           <div className="space-y-8">

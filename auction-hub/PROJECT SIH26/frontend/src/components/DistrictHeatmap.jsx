@@ -81,12 +81,16 @@ export default function DistrictHeatmap({ onSelectDistrict }) {
                 {/* Metrics */}
                 <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-slate-800/80 text-xs">
                   <div>
-                    <span className="text-[11px] text-slate-500 block">Total Outlay</span>
+                    <span className="text-[11px] text-slate-500 block">Monitored Outlay</span>
                     <span className="font-semibold text-slate-200 font-mono">₹{d.total_crores} Cr</span>
                   </div>
                   <div>
-                    <span className="text-[11px] text-slate-500 block">Sanctions</span>
-                    <span className="font-semibold text-slate-200">{d.total_projects} works</span>
+                    <span className="text-[11px] text-slate-500 block">MoSPI Limit</span>
+                    <span className="font-semibold text-amber-400 font-mono">₹{d.allocated_amount_crores || 14.7} Cr</span>
+                  </div>
+                  <div>
+                    <span className="text-[11px] text-slate-500 block">Utilization</span>
+                    <span className="font-semibold text-emerald-400 font-mono">{d.utilization_pct || 0}%</span>
                   </div>
                   <div>
                     <span className="text-[11px] text-slate-500 block">Critical Flags</span>
@@ -94,13 +98,8 @@ export default function DistrictHeatmap({ onSelectDistrict }) {
                       {d.critical_projects}
                     </span>
                   </div>
-                  <div>
-                    <span className="text-[11px] text-slate-500 block">Duplicates</span>
-                    <span className={`font-bold font-mono ${d.duplicate_alerts > 0 ? 'text-indigo-400' : 'text-slate-400'}`}>
-                      {d.duplicate_alerts}
-                    </span>
-                  </div>
                 </div>
+
               </div>
 
               <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-amber-400 font-medium">

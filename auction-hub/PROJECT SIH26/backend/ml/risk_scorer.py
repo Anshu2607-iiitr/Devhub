@@ -24,16 +24,21 @@ class RiskScorerAndXAI:
         velocity_eval: Dict[str, Any],
         hazard_eval: Dict[str, Any],
         duplicate_eval: Dict[str, Any],
-        unsupervised_eval: Dict[str, Any]
+        unsupervised_eval: Dict[str, Any],
+        allocation_eval: Dict[str, Any] = None
     ) -> Dict[str, Any]:
         """
         Calculates the 0-100 composite risk score and synthesizes explainability components.
         """
+        if allocation_eval is None:
+            allocation_eval = {}
+
         cost_factor = cost_eval.get("cost_risk_factor", 0.0)
         dup_factor = duplicate_eval.get("duplicate_risk_factor", 0.0)
         hazard_factor = hazard_eval.get("hazard_risk_factor", 0.0)
         unsup_factor = unsupervised_eval.get("unsupervised_risk_factor", 0.0)
         vel_factor = velocity_eval.get("velocity_risk_factor", 0.0)
+        ceil_factor = allocation_eval.get("ceiling_risk_factor", 0.0)
 
         # Baseline linear point contributions (out of 100 max)
         c_pts = cost_factor * (self.weights["cost_inflation"] * 100.0)
@@ -41,8 +46,9 @@ class RiskScorerAndXAI:
         h_pts = hazard_factor * (self.weights["milestone_hazard"] * 100.0)
         u_pts = unsup_factor * (self.weights["unsupervised_outlier"] * 100.0)
         v_pts = vel_factor * (self.weights["velocity_burst"] * 100.0)
+        ceil_pts = ceil_factor * 16.0
 
-        raw_score = c_pts + d_pts + h_pts + u_pts + v_pts
+        raw_score = c_pts + d_pts + h_pts + u_pts + v_pts + ceil_pts
 
         # Multi-flag synergy booster (e.g. Duplicate + Inflated Cost or High Funds + Stalled works)
         synergy_boost = 0.0
@@ -50,8 +56,11 @@ class RiskScorerAndXAI:
             synergy_boost += 15.0 # Suspected collusive duplicate with inflated bill
         if hazard_factor > 0.6 and unsup_factor > 0.5:
             synergy_boost += 12.0 # Ghost / abandoned project signature
+        if ceil_factor > 0.5 and cost_factor > 0.4:
+            synergy_boost += 10.0 # Massive single outlay consuming disproportionate MP quota
             
         final_score = round(min(100.0, raw_score + synergy_boost), 1)
+
 
         # Determine Tier
         if final_score >= 80.0:
@@ -141,6 +150,20 @@ class RiskScorerAndXAI:
             })
             actionable_reasons.append("Irregular cluster of project approvals cleared within an abnormally compressed time window.")
 
+        # 6. MoSPI Allocation Ceiling Breach
+        if allocation_eval.get("is_ceiling_risk") or allocation_eval.get("ceiling_risk_factor", 0) > 0.2:
+            pts = round(ceil_pts, 1)
+            consumed_pct = allocation_eval.get("allocation_consumption_pct", 0)
+            limit_cr = allocation_eval.get("mp_allocated_limit_crores", 14.7)
+            shap_explanations.append({
+                "feature": "MoSPI Allocation Ceiling Strain",
+                "impact_points": pts,
+                "importance_pct": round(pts / max(final_score, 1.0) * 100, 1),
+                "badge": "Ceiling Breach",
+                "details": f"Single work sanction consumes {consumed_pct}% of the MP's total multi-year MoSPI allocation limit (₹{limit_cr} Cr)."
+            })
+            actionable_reasons.append(f"Disproportionate capital concentration: 1 project claims {consumed_pct}% of total constituency fund quota.")
+
         # If project is normal/low risk and no explanations added
         if not shap_explanations:
             shap_explanations.append({
@@ -174,5 +197,7 @@ class RiskScorerAndXAI:
             "hazard_evaluation": hazard_eval,
             "duplicate_evaluation": duplicate_eval,
             "unsupervised_evaluation": unsupervised_eval,
-            "velocity_evaluation": velocity_eval
+            "velocity_evaluation": velocity_eval,
+            "allocation_evaluation": allocation_eval
         }
+
