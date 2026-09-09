@@ -8,6 +8,9 @@ import DistrictHeatmap from './components/DistrictHeatmap';
 import DuplicateClusters from './components/DuplicateClusters';
 import VendorAnalytics from './components/VendorAnalytics';
 import ProposalSimulator from './components/ProposalSimulator';
+import ContractorPortal from './components/ContractorPortal';
+import CitizenPortal from './components/CitizenPortal';
+import ExplainableChatbot from './components/ExplainableChatbot';
 import ProjectDetailModal from './components/ProjectDetailModal';
 import GlossaryModal from './components/GlossaryModal';
 import { fetchSummary, fetchProjectDetail } from './api';
@@ -108,6 +111,19 @@ export default function App() {
           />
         )}
 
+        {activeTab === 'contractor' && (
+          <ContractorPortal
+            onNavigateToProjects={handleNavigateToProjects}
+          />
+        )}
+
+        {activeTab === 'citizen' && (
+          <CitizenPortal />
+        )}
+
+        {activeTab === 'chatbot' && (
+          <ExplainableChatbot />
+        )}
 
         {activeTab === 'map' && (
           <div className="space-y-8">

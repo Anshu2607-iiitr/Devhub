@@ -1,15 +1,18 @@
 import React from 'react';
-import { ShieldAlert, BarChart3, ListFilter, MapPin, Copy, Building2, Zap, Landmark } from 'lucide-react';
+import { ShieldAlert, BarChart3, ListFilter, MapPin, Copy, Building2, Zap, Landmark, Camera, Users, Bot } from 'lucide-react';
 
 export default function Header({ activeTab, setActiveTab, totalMonitored, criticalCount, onOpenGlossary }) {
   const tabs = [
     { id: 'overview', label: 'Executive Overview', icon: BarChart3 },
     { id: 'mps', label: '543 Lok Sabha MPs', icon: Landmark },
-    { id: 'projects', label: 'Flagged Projects Explorer', icon: ListFilter, badge: criticalCount },
-    { id: 'map', label: 'Constituency Risk Zones', icon: MapPin },
-    { id: 'duplicates', label: 'Duplicate Work Clusters', icon: Copy },
-    { id: 'vendors', label: 'Vendor Intelligence', icon: Building2 },
-    { id: 'simulator', label: 'Live Proposal Sandbox', icon: Zap, highlight: true },
+    { id: 'projects', label: 'Flagged Projects', icon: ListFilter, badge: criticalCount },
+    { id: 'contractor', label: 'Contractor Portal', icon: Camera },
+    { id: 'citizen', label: 'Citizen Verification', icon: Users },
+    { id: 'chatbot', label: 'Explainable AI Chatbot', icon: Bot },
+    { id: 'map', label: 'Constituency Maps', icon: MapPin },
+    { id: 'duplicates', label: 'Duplicate Clusters', icon: Copy },
+    { id: 'vendors', label: 'Vendors', icon: Building2 },
+    { id: 'simulator', label: 'Proposal Sandbox', icon: Zap, highlight: true },
   ];
 
 
