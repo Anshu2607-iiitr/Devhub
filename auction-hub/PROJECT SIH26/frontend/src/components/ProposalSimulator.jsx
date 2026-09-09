@@ -99,12 +99,12 @@ export default function ProposalSimulator() {
       {/* Header Banner with Subtab Switcher */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-amber-400 font-bold text-sm uppercase tracking-wider">
+          <div className="flex items-center space-x-2 text-amber-400 font-bold text-sm">
             <Zap className="w-5 h-5 text-amber-400" />
-            <span>Live Sanction Proposal Sandbox (Pre-Clearance AI Audit)</span>
+            <span>Proposal Simulator</span>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Simulate a new MPLADS work proposal before sanction clearance. The engine checks regional cost benchmarks, Poisson sanction bursts, and NLP duplicate overlaps in real time.
+            Test a proposal against cost benchmarks and duplicate detection before sanction clearance
           </p>
         </div>
 
@@ -282,17 +282,17 @@ export default function ProposalSimulator() {
               <button
                 type="submit"
                 disabled={analyzing}
-                className="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-lg shadow-lg transition flex items-center justify-center space-x-2 text-xs"
+                className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg transition flex items-center justify-center space-x-2 text-xs"
               >
                 {analyzing ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Executing Multi-Vector Anomaly Diagnostics...</span>
+                    <span>Analyzing...</span>
                   </>
                 ) : (
                   <>
                     <Zap className="w-4 h-4" />
-                    <span>Run Real-Time AI Pre-Clearance Audit</span>
+                    <span>Analyze Proposal</span>
                   </>
                 )}
               </button>
@@ -300,12 +300,12 @@ export default function ProposalSimulator() {
           </form>
         </div>
 
-        {/* Real-time AI Evaluation Output */}
+        {/* Real-time Evaluation Output */}
         <div className="lg:col-span-6 bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+            <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
               <ShieldAlert className="w-4 h-4 text-emerald-400" />
-              <span>Real-Time Audit Diagnosis</span>
+              <span>Audit Diagnosis</span>
             </h3>
             {result && (
               <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${

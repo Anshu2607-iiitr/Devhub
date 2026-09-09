@@ -21,12 +21,8 @@ export default function DistrictHeatmap({ onSelectDistrict }) {
     <div className="space-y-6">
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm flex items-center justify-between">
         <div>
-          <h2 className="text-base font-bold text-white uppercase tracking-wider">
-            Parliamentary Constituency & District Risk Exposure Map
-          </h2>
-          <p className="text-xs text-slate-400 mt-1">
-            Aggregated territorial anomaly index, sanction velocity, and financial vulnerability
-          </p>
+          <h2 className="text-base font-bold text-white">Constituency Risk Overview</h2>
+          <p className="text-xs text-slate-400 mt-1">Risk scores and fund utilization by constituency</p>
         </div>
         <span className="text-xs px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 font-mono">
           {districts.length} Constituencies Monitored
@@ -42,11 +38,11 @@ export default function DistrictHeatmap({ onSelectDistrict }) {
             <div
               key={d.district}
               onClick={() => onSelectDistrict(d.district)}
-              className={`p-4 rounded-xl border transition cursor-pointer hover:scale-[1.02] shadow-sm flex flex-col justify-between ${
+              className={`p-4 rounded-xl border transition cursor-pointer shadow-sm flex flex-col justify-between ${
                 isCritical
-                  ? 'bg-gradient-to-b from-slate-900 to-red-950/40 border-red-900 hover:border-red-600'
+                  ? 'bg-slate-900 border-red-900/60 hover:border-red-600'
                   : isWarning
-                  ? 'bg-gradient-to-b from-slate-900 to-amber-950/40 border-amber-900 hover:border-amber-600'
+                  ? 'bg-slate-900 border-amber-900/60 hover:border-amber-600'
                   : 'bg-slate-900 border-slate-800 hover:border-slate-700'
               }`}
             >

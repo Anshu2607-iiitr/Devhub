@@ -41,19 +41,19 @@ export default function GeospatialMap({ onSelectDistrict }) {
       {/* Header */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center space-x-2 text-amber-400 font-bold text-sm uppercase tracking-wider">
+          <div className="flex items-center space-x-2 text-amber-400 font-bold text-sm">
             <Navigation className="w-5 h-5 text-amber-400" />
-            <span>Interactive Geospatial Anomaly Map</span>
+            <span>Geospatial Risk Map</span>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Real-time geospatial plotting of monitored constituencies with coordinate-linked risk radiuses and vulnerability tiers
+            Monitored constituencies plotted by risk level
           </p>
         </div>
 
         <div className="flex items-center space-x-3 text-xs">
           <span className="flex items-center gap-1.5 text-slate-300">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
-            Critical (Score ≥ 55)
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+            Critical (≥ 55)
           </span>
           <span className="flex items-center gap-1.5 text-slate-300">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
@@ -70,15 +70,10 @@ export default function GeospatialMap({ onSelectDistrict }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* SVG Map Canvas */}
-        <div className="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-2xl p-6 relative overflow-hidden shadow-inner flex items-center justify-center min-h-[480px]">
+        <div className="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-xl p-6 relative overflow-hidden shadow-inner flex items-center justify-center min-h-[480px]">
           
           {/* Subtle Grid Lines & Compass */}
           <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#64748b_1px,transparent_1px)] [background-size:16px_16px]"></div>
-          
-          <div className="absolute top-4 left-4 z-10 flex items-center space-x-2 text-[11px] text-slate-500 bg-slate-950/80 px-2.5 py-1 rounded-md border border-slate-800">
-            <Layers className="w-3.5 h-3.5 text-amber-400" />
-            <span>MoSPI Geographic Coordinate Projection (WGS84)</span>
-          </div>
 
           <svg viewBox="0 0 800 600" className="w-full h-full max-h-[500px]">
             {/* Outline connection / radar lines */}
@@ -146,12 +141,12 @@ export default function GeospatialMap({ onSelectDistrict }) {
         </div>
 
         {/* Selected Constituency Details Card */}
-        <div className="lg:col-span-4 bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-4 bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm flex flex-col justify-between space-y-4">
           {activePin ? (
             <div className="space-y-4">
               <div className="border-b border-slate-800 pb-3">
                 <span className="text-[10px] uppercase font-bold text-amber-400 tracking-wider block">
-                  Constituency Intelligence Profile
+                  Selected Constituency
                 </span>
                 <h3 className="text-xl font-bold text-white mt-0.5 flex items-center gap-1.5">
                   <MapPin className="w-5 h-5 text-amber-400" />
@@ -200,13 +195,6 @@ export default function GeospatialMap({ onSelectDistrict }) {
                     {activePin.critical_projects} projects
                   </span>
                 </div>
-              </div>
-
-
-              {/* Coordinates Info */}
-              <div className="text-[11px] text-slate-400 bg-slate-950 p-2.5 rounded-lg border border-slate-800 font-mono flex items-center justify-between">
-                <span>Geo-Coords:</span>
-                <span>{activePin.lat?.toFixed(4)}°N, {activePin.lng?.toFixed(4)}°E</span>
               </div>
             </div>
           ) : (

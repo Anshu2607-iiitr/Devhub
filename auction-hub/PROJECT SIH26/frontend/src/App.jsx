@@ -162,18 +162,9 @@ export default function App() {
       )}
 
       {/* Footer */}
-      <footer className="bg-slate-950 border-t border-slate-900 py-6 text-xs text-slate-500 text-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>MPLADS Vigil Intelligence Platform • SIH 2026</span>
-          </div>
-          <div>
-            FastAPI Backend • Scikit-learn Isolation Forest • Poisson Baseline • NLP TF-IDF Cosine Vectorizer • SHAP Explainability
-          </div>
-          <div>
-            Internal MoSPI & District Collectorate Audit Portal
-          </div>
+      <footer className="bg-slate-950 border-t border-slate-900 py-4 text-xs text-slate-500 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          MPLADS Vigil • SIH 2026 • MoSPI District Audit Portal
         </div>
       </footer>
 

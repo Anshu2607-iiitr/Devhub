@@ -53,69 +53,23 @@ export default function MpsExplorer({ onSelectMpConstituency }) {
   return (
     <div className="space-y-6">
       
-      {/* Header Banner */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center space-x-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
-              <Landmark className="w-4 h-4 text-amber-400" />
-              <span>MoSPI Statutory Allocation Directory • 18th Lok Sabha</span>
-            </div>
-            <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <span>All 543 Lok Sabha Members of Parliament</span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 font-mono">
-                Official Ingestion
-              </span>
-            </h2>
-            <p className="text-xs text-slate-400 max-w-3xl">
-              Authentic multi-year MPLADS entitlement limits parsed directly from MoSPI official schedules. 
-              Track sanctioned project outlays, detect allocation ceiling pressures, and monitor district fund utilization in real time.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="text-right">
-              <span className="text-[11px] text-slate-500 block">Total Statutory Corpus</span>
-              <span className="text-lg font-bold text-amber-400 font-mono">
-                ₹{mpsData?.total_official_allocated_crores?.toLocaleString('en-IN') || '8,348.37'} Cr
-              </span>
-            </div>
-            <div className="h-8 w-px bg-slate-800"></div>
-            <div className="text-right">
-              <span className="text-[11px] text-slate-500 block">Constituencies</span>
-              <span className="text-lg font-bold text-white font-mono">543 Seats</span>
-            </div>
-          </div>
+      {/* Page Header */}
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <Landmark className="w-5 h-5 text-amber-400" />
+            543 Lok Sabha MPs — Allocation Directory
+          </h2>
+          <p className="text-xs text-slate-400 mt-1">Official MoSPI statutory entitlement limits for the 18th Lok Sabha</p>
         </div>
-
-        {/* Global KPI Ribbon */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-5 border-t border-slate-800/80">
-          <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
-            <span className="text-slate-500 text-[11px] block">Standard MP Baseline</span>
-            <span className="text-sm font-bold text-slate-200 font-mono">₹14.70 Cr</span>
-            <span className="text-[10px] text-slate-500 block mt-0.5">Base 3-yr statutory entitlement</span>
+        <div className="flex items-center gap-4 text-sm">
+          <div className="text-right">
+            <span className="text-[11px] text-slate-500 block">Total Corpus</span>
+            <span className="font-bold text-amber-400 font-mono">₹{mpsData?.total_official_allocated_crores?.toLocaleString('en-IN') || '8,348.37'} Cr</span>
           </div>
-
-          <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
-            <span className="text-slate-500 text-[11px] block">Peak Allocation Limit</span>
-            <span className="text-sm font-bold text-amber-400 font-mono">₹32.75 Cr</span>
-            <span className="text-[10px] text-slate-500 block mt-0.5">Malkajgiri (Telangana)</span>
-          </div>
-
-          <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
-            <span className="text-slate-500 text-[11px] block">Monitored Outlay</span>
-            <span className="text-sm font-bold text-slate-200 font-mono">
-              ₹{mpsData?.total_monitored_crores || '0'} Cr
-            </span>
-            <span className="text-[10px] text-slate-500 block mt-0.5">Under AI Vigilance</span>
-          </div>
-
-          <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
-            <span className="text-slate-500 text-[11px] block">Tracked Utilization</span>
-            <span className="text-sm font-bold text-emerald-400 font-mono">
-              {mpsData?.average_utilization_pct || '0'}%
-            </span>
-            <span className="text-[10px] text-slate-500 block mt-0.5">National Corpus Clearance</span>
+          <div className="text-right">
+            <span className="text-[11px] text-slate-500 block">Avg Utilization</span>
+            <span className="font-bold text-emerald-400 font-mono">{mpsData?.average_utilization_pct || '0'}%</span>
           </div>
         </div>
       </div>
@@ -180,11 +134,11 @@ export default function MpsExplorer({ onSelectMpConstituency }) {
       </div>
 
       {/* MP Directory Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
         {loading ? (
           <div className="p-16 text-center text-slate-400">
             <div className="inline-block animate-spin w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full mb-3"></div>
-            <p className="text-xs">Querying Official MoSPI Lok Sabha Register...</p>
+            <p className="text-xs">Loading MPs directory...</p>
           </div>
         ) : !mpsData?.items || mpsData.items.length === 0 ? (
           <div className="p-16 text-center text-slate-400 text-xs">
@@ -208,7 +162,6 @@ export default function MpsExplorer({ onSelectMpConstituency }) {
               <tbody className="divide-y divide-slate-800/80">
                 {mpsData.items.map((mp) => {
                   const util = mp.utilization_pct || 0;
-                  const isHighAlloc = mp.allocated_amount_crores > 15.0;
                   const isCritical = mp.risk_tier === 'Critical';
 
                   return (
@@ -221,10 +174,9 @@ export default function MpsExplorer({ onSelectMpConstituency }) {
 
                       {/* MP Name */}
                       <td className="py-3 px-4">
-                        <div className="font-bold text-white text-sm flex items-center gap-1.5">
-                          <span>{mp.mp_name}</span>
+                        <div className="font-bold text-white text-sm">
+                          {mp.mp_name}
                         </div>
-                        <span className="text-[11px] text-slate-500">18th Lok Sabha Representative</span>
                       </td>
 
                       {/* Constituency & State */}
@@ -241,14 +193,6 @@ export default function MpsExplorer({ onSelectMpConstituency }) {
                         <div className="font-bold text-white font-mono text-sm">
                           ₹{mp.allocated_amount_crores?.toFixed(2)} Cr
                         </div>
-                        <span className="text-[10px] text-slate-500 font-mono">
-                          (₹{mp.allocated_amount_lakhs?.toLocaleString('en-IN')} Lakhs)
-                        </span>
-                        {isHighAlloc && (
-                          <span className="block text-[9px] text-amber-400 font-bold uppercase mt-0.5">
-                            Special/Unspent
-                          </span>
-                        )}
                       </td>
 
                       {/* Monitored Outlay */}
@@ -288,7 +232,7 @@ export default function MpsExplorer({ onSelectMpConstituency }) {
                             Compliant
                           </span>
                         ) : (
-                          <span className="text-slate-500 text-[11px]">Pending Sync</span>
+                          <span className="text-slate-500 text-[11px]">—</span>
                         )}
                       </td>
 

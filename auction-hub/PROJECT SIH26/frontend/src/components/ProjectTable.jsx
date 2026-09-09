@@ -54,11 +54,11 @@ export default function ProjectTable({ initialTier = 'All', onSelectProject }) {
 
   const quickFilters = [
     { label: 'All Projects', tier: 'All', anomaly: 'All' },
-    { label: '🚨 Critical (≥ 80)', tier: 'Critical', anomaly: 'All' },
-    { label: '⚠️ High (60-79)', tier: 'High', anomaly: 'All' },
-    { label: '📄 Duplicate Works', tier: 'All', anomaly: 'Duplicate' },
-    { label: '💰 Cost Overruns', tier: 'All', anomaly: 'Cost' },
-    { label: '⏳ Milestone Stalled', tier: 'All', anomaly: 'Execution' },
+    { label: 'Critical (≥ 80)', tier: 'Critical', anomaly: 'All' },
+    { label: 'High (60-79)', tier: 'High', anomaly: 'All' },
+    { label: 'Duplicate Works', tier: 'All', anomaly: 'Duplicate' },
+    { label: 'Cost Overruns', tier: 'All', anomaly: 'Cost' },
+    { label: 'Milestone Stalled', tier: 'All', anomaly: 'Execution' },
   ];
 
   const getTierBadge = (t, score) => {
@@ -66,7 +66,7 @@ export default function ProjectTable({ initialTier = 'All', onSelectProject }) {
       case 'Critical':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-red-950 text-red-400 border border-red-800">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
             {score} • Critical
           </span>
         );
@@ -272,7 +272,7 @@ export default function ProjectTable({ initialTier = 'All', onSelectProject }) {
               {loading ? (
                 <tr>
                   <td colSpan="8" className="px-4 py-12 text-center text-slate-400">
-                    Running neural anomaly scoring and filtering...
+                    Loading projects...
                   </td>
                 </tr>
               ) : projects.length === 0 ? (
@@ -371,7 +371,7 @@ export default function ProjectTable({ initialTier = 'All', onSelectProject }) {
                           className="px-2.5 py-1 rounded bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-300 border border-slate-700 transition flex items-center justify-center gap-1 mx-auto text-[11px] font-semibold"
                         >
                           <Eye className="w-3.5 h-3.5" />
-                          <span>Audit XAI</span>
+                          <span>Audit & Details</span>
                         </button>
                       </td>
 

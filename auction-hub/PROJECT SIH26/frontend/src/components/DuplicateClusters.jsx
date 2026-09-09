@@ -14,7 +14,7 @@ export default function DuplicateClusters({ onSelectProject }) {
   }, []);
 
   if (loading) {
-    return <div className="p-12 text-center text-slate-400">Scanning semantic vector inverted index for duplicate contracts...</div>;
+    return <div className="p-12 text-center text-slate-400">Loading duplicate clusters...</div>;
   }
 
   return (
@@ -23,12 +23,12 @@ export default function DuplicateClusters({ onSelectProject }) {
       {/* Header Banner */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center space-x-2 text-indigo-400 font-bold text-sm uppercase tracking-wider">
+          <div className="flex items-center space-x-2 text-indigo-400 font-bold text-sm">
             <Copy className="w-5 h-5" />
-            <span>NLP Semantic Duplicate Work Clusters</span>
+            <span>Duplicate Work Clusters</span>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Detects semantically equivalent project titles or descriptions awarded across separate contractors or overlapping wards
+            Projects with similar titles or scopes flagged for review
           </p>
         </div>
         <span className="text-xs px-3 py-1 rounded-full bg-indigo-950 border border-indigo-800 text-indigo-300 font-bold">

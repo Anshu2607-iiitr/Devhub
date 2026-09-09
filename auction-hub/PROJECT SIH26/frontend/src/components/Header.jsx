@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldAlert, BarChart3, ListFilter, MapPin, Copy, Building2, Zap, Activity, Landmark } from 'lucide-react';
+import { ShieldAlert, BarChart3, ListFilter, MapPin, Copy, Building2, Zap, Landmark } from 'lucide-react';
 
 export default function Header({ activeTab, setActiveTab, totalMonitored, criticalCount, onOpenGlossary }) {
   const tabs = [
@@ -20,21 +20,18 @@ export default function Header({ activeTab, setActiveTab, totalMonitored, critic
           
           {/* Logo & Platform Info */}
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-to-tr from-amber-500 to-red-600 rounded-lg shadow-lg flex items-center justify-center">
-              <ShieldAlert className="w-6 h-6 text-white" />
+            <div className="p-2 bg-amber-500 rounded-lg flex items-center justify-center">
+              <ShieldAlert className="w-5 h-5 text-slate-950" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
                 <h1 className="text-lg font-bold text-white tracking-wide">
                   MPLADS <span className="text-amber-400 font-extrabold">VIGIL</span>
                 </h1>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-red-950 text-red-400 border border-red-800 font-semibold flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                  AI Oversight Live
-                </span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" title="System Active"></span>
               </div>
               <p className="text-xs text-slate-400">
-                MoSPI Autonomous Financial Leakage & Anomaly Detection Engine
+                MPLADS Fund Monitoring Platform
               </p>
             </div>
           </div>
@@ -46,19 +43,12 @@ export default function Header({ activeTab, setActiveTab, totalMonitored, critic
               className="px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 hover:border-amber-500/50 text-slate-300 hover:text-amber-400 text-xs font-semibold transition flex items-center gap-1.5"
               title="Open AI & Statistical Methodology Glossary"
             >
-              <span>AI Glossary & Help</span>
+              <span>Methodology & Help</span>
             </button>
 
-            {/* Real-time Status Badge */}
-            <div className="hidden lg:flex items-center space-x-4 text-xs text-slate-300 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
-              <div className="flex items-center space-x-1.5 text-emerald-400">
-                <Activity className="w-4 h-4 animate-spin text-emerald-400" />
-                <span className="font-medium">Stream Ingestion Active</span>
-              </div>
-              <div className="h-4 w-px bg-slate-800"></div>
-              <div>
-                Monitored: <span className="text-white font-semibold">₹{totalMonitored || '0'} Cr</span>
-              </div>
+            {/* Status Info */}
+            <div className="hidden lg:flex items-center text-xs text-slate-300 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
+              <span>Monitored: <span className="text-white font-semibold">₹{totalMonitored || '0'} Cr</span></span>
             </div>
           </div>
         </div>

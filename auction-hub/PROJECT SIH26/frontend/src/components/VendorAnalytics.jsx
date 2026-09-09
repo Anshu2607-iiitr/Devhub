@@ -25,12 +25,12 @@ export default function VendorAnalytics() {
       {/* Header */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2 text-blue-400 font-bold text-sm uppercase tracking-wider">
+          <div className="flex items-center space-x-2 text-blue-400 font-bold text-sm">
             <Building2 className="w-5 h-5" />
-            <span>Vendor Concentration & Collusion Profiling</span>
+            <span>Vendor Analytics</span>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Tracks bidding concentration, multi-constituency capture, repeat anomaly rates, and potential syndicate patterns
+            Vendor risk profiles and project distribution
           </p>
         </div>
 
@@ -66,7 +66,7 @@ export default function VendorAnalytics() {
               {loading ? (
                 <tr>
                   <td colSpan="9" className="px-4 py-12 text-center text-slate-400">
-                    Loading vendor risk profiles...
+                    Loading vendors...
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
