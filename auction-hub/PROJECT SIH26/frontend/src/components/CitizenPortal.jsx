@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { 
   Users, MapPin, Camera, AlertOctagon, CheckCircle2, 
-  ThumbsUp, ShieldCheck, Flag, Search, Filter 
+  ThumbsUp, ShieldCheck, Flag, Search, Filter, Image 
 } from 'lucide-react';
+import LiveCameraModal from './LiveCameraModal';
 
 export default function CitizenPortal() {
   const [selectedWard, setSelectedWard] = useState('Shivpur Ward 14');
   const [grievanceType, setGrievanceType] = useState('Stalled Work / Abandoned Site');
   const [description, setDescription] = useState('');
-  const [hasPhoto, setHasPhoto] = useState(false);
+  const [capturedPhotoData, setCapturedPhotoData] = useState(null);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [submittedGrievance, setSubmittedGrievance] = useState(false);
 
-  // Sample community verified feed
   const [communityReports, setCommunityReports] = useState([
     {
       id: 'CIT-2026-012',
@@ -55,17 +56,18 @@ export default function CitizenPortal() {
       project_title: 'Local Public Asset Verification',
       ward: selectedWard,
       issue: description || 'Ground progress disparity reported by verified resident',
-      citizen_reputation: '4.7 / 5.0 (GPS Verified Resident)',
+      citizen_reputation: '4.8 / 5.0 (GPS Verified Resident)',
       upvotes: 1,
       status: 'Pending AI Credibility Scrutiny',
       date: new Date().toISOString().substring(0, 10),
-      verified: false
+      verified: false,
+      photo: capturedPhotoData?.photoUrl || null
     };
 
     setCommunityReports([newReport, ...communityReports]);
     setSubmittedGrievance(true);
     setDescription('');
-    setHasPhoto(false);
+    setCapturedPhotoData(null);
     setTimeout(() => setSubmittedGrievance(false), 4000);
   };
 
@@ -84,12 +86,12 @@ export default function CitizenPortal() {
             <span>Citizen Ground Verification & Counter-Reporting Portal</span>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Empowering citizens as decentralized vigilance ground sensors. Submit geo-tagged counter-photos and grievances protected by a credibility-weighted anti-abuse scoring engine.
+            Empowering citizens as decentralized ground sensors. Capture live geo-stamped photos and report project anomalies protected by reputation credibility scoring.
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="text-slate-300">Credibility Weighting • Anti-Spam Rate Limited</span>
+          <span className="text-slate-300">Live Camera Ingestion • Anti-Spam Rate Limited</span>
         </div>
       </div>
 
@@ -97,8 +99,8 @@ export default function CitizenPortal() {
         <div className="p-4 bg-emerald-950/80 border border-emerald-800 rounded-xl text-emerald-300 text-xs font-semibold flex items-center gap-3">
           <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
           <div>
-            <span className="font-bold block">Grievance Successfully Registered & Authenticated!</span>
-            <span className="text-slate-300 font-normal">Your counter-evidence has been weighted with your credibility score and forwarded to the District Vigilance cell.</span>
+            <span className="font-bold block">Grievance Successfully Registered with Geotagged Evidence!</span>
+            <span className="text-slate-300 font-normal">Your report has been weighted with your credibility score and added to the District Vigilance inspection queue.</span>
           </div>
         </div>
       )}
@@ -157,36 +159,49 @@ export default function CitizenPortal() {
               />
             </div>
 
-            {/* Photo Upload Simulation */}
+            {/* Live Camera Photo Capture for Citizens */}
             <div className="p-3.5 bg-slate-950 rounded-lg border border-slate-800 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-medium text-slate-300">Attach Geo-Tagged Evidence Photo</span>
-                {hasPhoto && (
-                  <span className="text-[10px] text-emerald-400 font-bold">GPS Verified</span>
+                <span className="text-[11px] font-medium text-slate-300">Live Camera Evidence Photo</span>
+                {capturedPhotoData && (
+                  <span className="text-[10px] text-emerald-400 font-bold font-mono">GPS Verified</span>
                 )}
               </div>
-              <button
-                type="button"
-                onClick={() => setHasPhoto(!hasPhoto)}
-                className={`w-full py-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5 border ${
-                  hasPhoto
-                    ? 'bg-emerald-950/60 text-emerald-300 border-emerald-700'
-                    : 'bg-slate-900 text-slate-300 border-slate-700 hover:border-slate-600'
-                }`}
-              >
-                <Camera className="w-3.5 h-3.5 text-emerald-400" />
-                <span>{hasPhoto ? 'Photo Attached (GPS 25.317°N, 82.973°E)' : 'Upload Geo-Tagged Photo'}</span>
-              </button>
+
+              {capturedPhotoData ? (
+                <div className="space-y-2">
+                  <img src={capturedPhotoData.photoUrl} alt="Citizen Evidence" className="w-full h-32 object-cover rounded-lg border border-slate-700" />
+                  <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono">
+                    <span>GPS: {capturedPhotoData.gps.lat}°N, {capturedPhotoData.gps.lng}°E</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsCameraOpen(true)}
+                      className="text-amber-400 hover:text-amber-300 underline"
+                    >
+                      Retake
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsCameraOpen(true)}
+                  className="w-full py-2.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5"
+                >
+                  <Camera className="w-4 h-4 text-emerald-400" />
+                  <span>Launch Live Camera & Geotag</span>
+                </button>
+              )}
             </div>
 
             {/* Credibility info */}
             <div className="p-3 bg-slate-950 rounded-lg border border-slate-800/80 text-[11px] text-slate-400 space-y-1">
               <div className="flex items-center justify-between text-slate-300 font-semibold">
-                <span>Your Citizen Credibility Score:</span>
+                <span>Citizen Reputation Score:</span>
                 <span className="text-emerald-400 font-mono">4.8 / 5.0</span>
               </div>
               <p className="text-[10px] text-slate-500 leading-relaxed">
-                Reputation increases as your verified on-site reports are confirmed by technical audit inspectors.
+                Reputation increases as your verified on-site photos are confirmed by technical audit teams.
               </p>
             </div>
 
@@ -258,6 +273,15 @@ export default function CitizenPortal() {
         </div>
 
       </div>
+
+      {/* Citizen Live Camera Modal */}
+      <LiveCameraModal
+        isOpen={isCameraOpen}
+        onClose={() => setIsCameraOpen(false)}
+        onCapture={(data) => setCapturedPhotoData(data)}
+        targetWard={selectedWard}
+        targetDistrict="Varanasi"
+      />
 
     </div>
   );
