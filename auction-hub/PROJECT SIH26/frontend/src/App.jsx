@@ -2,23 +2,40 @@ import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import TopHeader from './components/TopHeader';
 import AuthGatewayPage from './pages/AuthGatewayPage';
-import DashboardPage from './pages/DashboardPage';
-import ProjectsPage from './pages/ProjectsPage';
-import RiskQueuePage from './pages/RiskQueuePage';
-import MapMonitoringPage from './pages/MapMonitoringPage';
-import EvidenceViewerPage from './pages/EvidenceViewerPage';
-import ContractorsPage from './pages/ContractorsPage';
-import CitizenFeedbackPage from './pages/CitizenFeedbackPage';
-import ReportsPage from './pages/ReportsPage';
-import AuditTrailPage from './pages/AuditTrailPage';
-import ContractorPortalPage from './pages/ContractorPortalPage';
-import CitizenPortalPage from './pages/CitizenPortalPage';
-import ProjectDetailModal from './components/ProjectDetailModal';
+
+// Contractor Portal Screens (Screens 1 to 4)
+import ContractorDashboardPage from './pages/contractor/ContractorDashboardPage';
+import ProgressSubmissionPage from './pages/contractor/ProgressSubmissionPage';
+import AIEvidenceVerificationPage from './pages/contractor/AIEvidenceVerificationPage';
+
+// Government Admin Screens (Screens 5 to 10)
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import AIRiskIntelligencePage from './pages/admin/AIRiskIntelligencePage';
+import FlaggedProjectsPage from './pages/admin/FlaggedProjectsPage';
+import ProjectInvestigationPage from './pages/admin/ProjectInvestigationPage';
+import InspectionWorkflowPage from './pages/admin/InspectionWorkflowPage';
+import InspectionReportPage from './pages/admin/InspectionReportPage';
+
+// Citizen Portal Screens (Screens 11 to 16)
+import CitizenHomePage from './pages/citizen/CitizenHomePage';
+import CitizenProjectExplorerPage from './pages/citizen/CitizenProjectExplorerPage';
+import ReportIssuePage from './pages/citizen/ReportIssuePage';
+import ComplaintTrackerPage from './pages/citizen/ComplaintTrackerPage';
+import CitizenAIAssistantPage from './pages/citizen/CitizenAIAssistantPage';
+
+// Shared Screens (Screens 17, 18 & Live Simulation Modal)
+import NotificationCenterPage from './pages/shared/NotificationCenterPage';
+import AuditTrailPage from './pages/shared/AuditTrailPage';
+import LiveCrossPortalSimulationModal from './pages/shared/LiveCrossPortalSimulationModal';
+
 import FloatingAssistant from './components/FloatingAssistant';
 
 export default function App() {
-  // Authentication State
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Default to logged-in for immediate demo view
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [lang, setLang] = useState('en'); // 'en' or 'hi'
+  const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
+
+  // Current Active User Profile
   const [currentUser, setCurrentUser] = useState({
     role: 'admin',
     name: 'Dr. Rameshwar Oraon',
@@ -28,8 +45,7 @@ export default function App() {
     badge: 'GOV-ADMIN-SEC-1'
   });
 
-  const [activeNav, setActiveNav] = useState('overview');
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [activeNav, setActiveNav] = useState('admin-dashboard');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Handle Login from Gateway
@@ -37,11 +53,11 @@ export default function App() {
     setCurrentUser(userProfile);
     setIsAuthenticated(true);
     if (userProfile.role === 'admin') {
-      setActiveNav('overview');
+      setActiveNav('admin-dashboard');
     } else if (userProfile.role === 'contractor') {
-      setActiveNav('contractor-portal');
+      setActiveNav('contractor-dashboard');
     } else if (userProfile.role === 'citizen') {
-      setActiveNav('citizen-portal');
+      setActiveNav('citizen-home');
     }
   };
 
@@ -50,7 +66,7 @@ export default function App() {
     setIsAuthenticated(false);
   };
 
-  // Live Role Switcher for Hackathon Evaluators
+  // Live Role Switcher for Hackathon Judges
   const handleSwitchRole = (newRole) => {
     if (newRole === 'admin') {
       setCurrentUser({
@@ -61,7 +77,7 @@ export default function App() {
         designation: 'State Nodal Officer',
         badge: 'GOV-ADMIN-SEC-1'
       });
-      setActiveNav('overview');
+      setActiveNav('admin-dashboard');
     } else if (newRole === 'contractor') {
       setCurrentUser({
         role: 'contractor',
@@ -71,7 +87,7 @@ export default function App() {
         designation: 'Authorized General Contractor',
         badge: 'VERIFIED-CONTRACTOR'
       });
-      setActiveNav('contractor-portal');
+      setActiveNav('contractor-dashboard');
     } else if (newRole === 'citizen') {
       setCurrentUser({
         role: 'citizen',
@@ -84,22 +100,15 @@ export default function App() {
         designation: 'Verified Resident (Score: 85/100)',
         badge: 'VERIFIED-CITIZEN'
       });
-      setActiveNav('citizen-portal');
+      setActiveNav('citizen-home');
     }
   };
 
-  const handleSelectProject = (proj) => {
-    setSelectedProject(proj);
+  // Toggle Language
+  const handleToggleLang = () => {
+    setLang((prev) => (prev === 'en' ? 'hi' : 'en'));
   };
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    if (query.trim() && activeNav !== 'projects') {
-      setActiveNav('projects');
-    }
-  };
-
-  // If not authenticated, display the 3-Role Auth Gateway
   if (!isAuthenticated) {
     return <AuthGatewayPage onLogin={handleLogin} />;
   }
@@ -107,86 +116,90 @@ export default function App() {
   return (
     <div className="flex h-screen bg-[#f8fafc] text-slate-800 font-sans antialiased overflow-hidden">
       
-      {/* Persistent Left Sidebar (Role-Adapted) */}
+      {/* Persistent Left Sidebar */}
       <Sidebar 
         activeNav={activeNav} 
         setActiveNav={setActiveNav} 
-        highRiskCount={86} 
-        feedbackCount={3}
         currentUser={currentUser}
         onLogout={handleLogout}
       />
 
-      {/* Main App Container */}
+      {/* Main Container */}
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         
-        {/* Top Government Header with Live Persona Switcher */}
+        {/* Top Government Header with Persona Switcher, Language Toggle, and Live Simulator */}
         <TopHeader 
           activeNav={activeNav} 
-          onSearch={handleSearch}
+          onNavigate={setActiveNav}
+          onSearch={setSearchQuery}
           searchQuery={searchQuery}
           currentUser={currentUser}
           onSwitchRole={handleSwitchRole}
           onLogout={handleLogout}
+          lang={lang}
+          onToggleLang={handleToggleLang}
+          onOpenSimulator={() => setIsSimulatorOpen(true)}
+          unreadNotifsCount={3}
         />
 
-        {/* Scrollable Main Content Area */}
+        {/* Main Content Area Routing All 18 Screens */}
         <main className="flex-1 overflow-y-auto px-6 py-6 bg-[#f8fafc]">
           <div className="max-w-7xl mx-auto space-y-6">
             
-            {activeNav === 'overview' && (
-              <DashboardPage 
-                onSelectProject={handleSelectProject} 
-                onNavigate={setActiveNav} 
-              />
+            {/* CONTRACTOR PORTAL SCREENS (1 to 4) */}
+            {activeNav === 'contractor-dashboard' && (
+              <ContractorDashboardPage onNavigate={setActiveNav} />
+            )}
+            {activeNav === 'contractor-submit' && (
+              <ProgressSubmissionPage onNavigate={setActiveNav} />
+            )}
+            {activeNav === 'contractor-ai-verify' && (
+              <AIEvidenceVerificationPage onNavigate={setActiveNav} />
             )}
 
-            {activeNav === 'projects' && (
-              <ProjectsPage 
-                onSelectProject={handleSelectProject} 
-              />
+            {/* GOVERNMENT ADMIN SCREENS (5 to 10) */}
+            {activeNav === 'admin-dashboard' && (
+              <AdminDashboardPage onNavigate={setActiveNav} />
+            )}
+            {activeNav === 'admin-risk-intel' && (
+              <AIRiskIntelligencePage onNavigate={setActiveNav} />
+            )}
+            {activeNav === 'admin-flagged' && (
+              <FlaggedProjectsPage onNavigate={setActiveNav} />
+            )}
+            {activeNav === 'admin-investigation' && (
+              <ProjectInvestigationPage onNavigate={setActiveNav} />
+            )}
+            {activeNav === 'admin-inspections' && (
+              <InspectionWorkflowPage onNavigate={setActiveNav} />
+            )}
+            {activeNav === 'admin-inspection-form' && (
+              <InspectionReportPage onNavigate={setActiveNav} />
             )}
 
-            {activeNav === 'risk-queue' && (
-              <RiskQueuePage 
-                onSelectProject={handleSelectProject} 
-              />
+            {/* CITIZEN PORTAL SCREENS (11 to 16) */}
+            {activeNav === 'citizen-home' && (
+              <CitizenHomePage onNavigate={setActiveNav} onSearch={setSearchQuery} lang={lang} />
+            )}
+            {activeNav === 'citizen-explorer' && (
+              <CitizenProjectExplorerPage onNavigate={setActiveNav} />
+            )}
+            {activeNav === 'citizen-report' && (
+              <ReportIssuePage onNavigate={setActiveNav} />
+            )}
+            {activeNav === 'citizen-tracker' && (
+              <ComplaintTrackerPage onNavigate={setActiveNav} />
+            )}
+            {activeNav === 'citizen-ai' && (
+              <CitizenAIAssistantPage onNavigate={setActiveNav} lang={lang} />
             )}
 
-            {activeNav === 'map' && (
-              <MapMonitoringPage 
-                onSelectProject={handleSelectProject} 
-              />
+            {/* SHARED SCREENS (17 & 18) */}
+            {activeNav === 'shared-notifications' && (
+              <NotificationCenterPage onNavigate={setActiveNav} currentRole={currentUser.role} />
             )}
-
-            {activeNav === 'evidence' && (
-              <EvidenceViewerPage />
-            )}
-
-            {activeNav === 'contractors' && (
-              <ContractorsPage />
-            )}
-
-            {activeNav === 'citizen-feedback' && (
-              <CitizenFeedbackPage />
-            )}
-
-            {activeNav === 'reports' && (
-              <ReportsPage />
-            )}
-
             {activeNav === 'audit-trail' && (
               <AuditTrailPage />
-            )}
-
-            {activeNav === 'contractor-portal' && (
-              <ContractorPortalPage 
-                onNavigate={setActiveNav} 
-              />
-            )}
-
-            {activeNav === 'citizen-portal' && (
-              <CitizenPortalPage />
             )}
 
           </div>
@@ -196,22 +209,21 @@ export default function App() {
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
               <span className="font-semibold text-slate-700">FundGuard AI</span>
-              <span>• Smart India Hackathon 2026 Engineering Product</span>
+              <span>• Smart India Hackathon 2026 Production Platform</span>
             </div>
             <div className="text-[11px] text-slate-400">
-              Ministry of Statistics and Programme Implementation (MoSPI) • Human-in-the-Loop Vigilance Platform
+              Ministry of Statistics and Programme Implementation (MoSPI) • Digital Public Infrastructure
             </div>
           </footer>
         </main>
       </div>
 
-      {/* Project Detail Modal */}
-      {selectedProject && (
-        <ProjectDetailModal
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-        />
-      )}
+      {/* 1-Click Interactive Live Cross-Portal Simulation Modal */}
+      <LiveCrossPortalSimulationModal 
+        isOpen={isSimulatorOpen} 
+        onClose={() => setIsSimulatorOpen(false)} 
+        onNavigate={setActiveNav} 
+      />
 
       {/* Floating Explainable AI Assistant */}
       <FloatingAssistant />

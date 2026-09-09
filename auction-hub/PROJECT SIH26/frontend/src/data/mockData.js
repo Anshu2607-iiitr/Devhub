@@ -1,423 +1,444 @@
-/**
- * FundGuard AI — Official Mock & State Dataset for SIH 2026 MPLADS Risk Intelligence
- * Note: Clearly labeled as DEMO / Illustrative values.
- */
+// FundGuard AI — Comprehensive Production Dataset for SIH 2026 (18 Screens)
 
-export const GOV_SUMMARY = {
+export const TRANSLATIONS = {
+  en: {
+    system_title: "FundGuard AI",
+    system_subtitle: "MPLADS Risk Intelligence Platform",
+    tagline: "AI does not replace government oversight. It helps government identify where oversight is needed most.",
+    gov_badge: "Digital Public Infrastructure • MoSPI",
+    role_admin: "Govt Admin",
+    role_contractor: "Contractor",
+    role_citizen: "Citizen",
+    live_sim_btn: "⚡ Run Live Cross-Portal Simulation",
+    exit_btn: "Exit Portal",
+    notifications: "Notifications",
+    search_placeholder: "Search projects, districts, contractors, complaint ID...",
+    hero_title: "Monitor Development. Report Issues. Strengthen Transparency.",
+    hero_subtitle: "Empowering citizens and authorities to track ₹5 Crore annual MPLADS constituency funds in real time.",
+    explore_projects: "Explore Projects",
+    report_issue: "Report an Issue",
+    track_complaint: "Track Complaint",
+    ask_ai: "Ask Citizen AI Assistant",
+    ai_notice: "Important: AI detects anomalies and prioritizes verification. It does not declare guilt. Constitutional due process remains final.",
+  },
+  hi: {
+    system_title: "फंडगार्ड एआई (FundGuard AI)",
+    system_subtitle: "एमपीलैड्स जोखिम आसूचना मंच",
+    tagline: "एआई सरकारी निगरानी की जगह नहीं लेता, बल्कि यह चिन्हित करता है कि कहां निगरानी की सबसे ज्यादा जरूरत है।",
+    gov_badge: "डिजिटल सार्वजनिक अवसंरचना • सांख्यिकी एवं कार्यक्रम कार्यान्वयन मंत्रालय (MoSPI)",
+    role_admin: "सरकारी व्यवस्थापक",
+    role_contractor: "ठेकेदार / एजेंसी",
+    role_citizen: "नागरिक पोर्टल",
+    live_sim_btn: "⚡ लाइव क्रॉस-पोर्टल सिमुलेशन चलाएं",
+    exit_btn: "पोर्टल से बाहर निकलें",
+    notifications: "सूचनाएं",
+    search_placeholder: "परियोजनाएं, जिले, ठेकेदार या शिकायत आईडी खोजें...",
+    hero_title: "विकास की निगरानी करें। समस्या की रिपोर्ट करें। पारदर्शिता बढ़ाएं।",
+    hero_subtitle: "नागरिकों और अधिकारियों को ₹5 करोड़ की वार्षिक एमपीलैड्स निधि की वास्तविक समय पर निगरानी का अधिकार।",
+    explore_projects: "परियोजनाएं देखें",
+    report_issue: "समस्या दर्ज करें",
+    track_complaint: "शिकायत ट्रैक करें",
+    ask_ai: "नागरिक एआई सहायक से पूछें",
+    ai_notice: "महत्वपूर्ण: एआई केवल विसंगतियों का पता लगाता है और सत्यापन को प्राथमिकता देता है। यह अपराध घोषित नहीं करता।",
+  }
+};
+
+export const CONTRACTOR_DATA = {
+  profile: {
+    id: "JH-CON-2026-089",
+    name: "ABC Infrastructure & Civil Works Ltd.",
+    gstin: "20AAACH7409R1ZV",
+    contact_person: "Er. Rajesh Verma",
+    mobile: "+91 98765 43210",
+    operating_circle: "Ranchi, Khunti & Simdega",
+    credibility_rating: "Class-A Certified",
+    total_assigned: 6,
+    active_projects: 4,
+    completed_projects: 2,
+    pending_submissions: 2,
+    upcoming_milestones: 3,
+    pending_verification_docs: 1,
+  },
+  projects: [
+    {
+      id: "MPLAD-JH-2026-089",
+      name: "Namkum to Rampur Rural Connectivity Road Upgrade",
+      location: "Namkum Block, Ward 12, Ranchi",
+      district: "Ranchi",
+      constituency: "Ranchi Parliamentary Constituency",
+      type: "Road",
+      sanctioned_amount: "₹1.20 Cr",
+      disbursed_amount: "₹90.00 Lakh (75%)",
+      start_date: "15 Jan 2026",
+      expected_completion: "30 Oct 2026",
+      claimed_progress: 80,
+      visual_progress: 42,
+      last_submission: "28 Aug 2026",
+      verification_status: "Anomaly Flagged — Inspection Scheduled",
+      risk_score: 87,
+      risk_level: "High",
+      scope: "Widening and bituminous blacktopping of 4.8 km arterial stretch including cross-drainage culverts.",
+      milestones: [
+        { name: "Earthwork & Subgrade Compaction", progress: 100, status: "Verified & Cleared", date: "15 Mar 2026" },
+        { name: "Granular Sub-Base (GSB) Layer", progress: 100, status: "Verified & Cleared", date: "30 May 2026" },
+        { name: "Wet Mix Macadam (WMM) Base", progress: 45, status: "Disputed / Discrepancy", date: "28 Aug 2026" },
+        { name: "Bituminous Concrete Surfacing", progress: 0, status: "Pending Execution", date: "Due 30 Sep 2026" }
+      ],
+      ai_checks: {
+        authenticity: "Pass (No pixel manipulation detected)",
+        duplicate_detection: "Warning: Similar image found in 2024 work record",
+        gps_consistency: "Warning: Coordinates deviate by 1.42 km from sanction polygon",
+        timestamp_consistency: "Pass (EXIF timestamp matches server receipt)",
+        location_match: "Warning: High vegetation background incompatible with urban ward profile",
+        visual_progress_estimation: "42% observed vs 80% reported"
+      }
+    },
+    {
+      id: "MPLAD-JH-2026-104",
+      name: "Community Health Sub-Centre Construction",
+      location: "Murhu Block, Khunti",
+      district: "Khunti",
+      constituency: "Khunti (ST) Parliamentary Constituency",
+      type: "Building",
+      sanctioned_amount: "₹85.00 Lakh",
+      disbursed_amount: "₹51.00 Lakh (60%)",
+      start_date: "10 Feb 2026",
+      expected_completion: "15 Nov 2026",
+      claimed_progress: 60,
+      visual_progress: 58,
+      last_submission: "02 Sep 2026",
+      verification_status: "Verified & Compliant",
+      risk_score: 22,
+      risk_level: "Low",
+      scope: "6-bed maternity ward, immunization room, solar backup, and staff quarters.",
+      milestones: [
+        { name: "Excavation & RCC Foundation", progress: 100, status: "Verified", date: "20 Mar 2026" },
+        { name: "Plinth Beam & Column Casting", progress: 100, status: "Verified", date: "15 May 2026" },
+        { name: "Brickwork & Roof Slab", progress: 85, status: "In Progress", date: "02 Sep 2026" },
+        { name: "Plastering, Electrical & Finishing", progress: 0, status: "Pending", date: "Due 15 Oct 2026" }
+      ],
+      ai_checks: {
+        authenticity: "Pass (Authentic digital capture)",
+        duplicate_detection: "Pass (Unique evidence hash)",
+        gps_consistency: "Pass (Within 12 meters of sanction centre)",
+        timestamp_consistency: "Pass (Verified)",
+        location_match: "Pass (Matches registered geo-fence)",
+        visual_progress_estimation: "58% observed vs 60% claimed"
+      }
+    },
+    {
+      id: "MPLAD-JH-2026-218",
+      name: "High School Composite Science Laboratory Block",
+      location: "Ratu Road, Gumla",
+      district: "Gumla",
+      constituency: "Lohardaga (ST) Parliamentary Constituency",
+      type: "Building",
+      sanctioned_amount: "₹65.00 Lakh",
+      disbursed_amount: "₹26.00 Lakh (40%)",
+      start_date: "01 Mar 2026",
+      expected_completion: "20 Dec 2026",
+      claimed_progress: 40,
+      visual_progress: 38,
+      last_submission: "20 Aug 2026",
+      verification_status: "Under Technical Review",
+      risk_score: 34,
+      risk_level: "Medium",
+      scope: "2-storey laboratory complex with physics, chemistry, biology workstations and safety showers.",
+      milestones: [
+        { name: "Excavation & Footing", progress: 100, status: "Verified", date: "10 Apr 2026" },
+        { name: "Ground Floor Superstructure", progress: 75, status: "In Progress", date: "20 Aug 2026" },
+        { name: "First Floor Slab & Masonry", progress: 0, status: "Pending", date: "Due 30 Oct 2026" }
+      ],
+      ai_checks: {
+        authenticity: "Pass",
+        duplicate_detection: "Pass",
+        gps_consistency: "Pass (0.04 km deviation)",
+        timestamp_consistency: "Pass",
+        location_match: "Pass",
+        visual_progress_estimation: "38% observed vs 40% claimed"
+      }
+    }
+  ]
+};
+
+export const ADMIN_KPI_DATA = {
   total_projects: 1284,
-  high_risk_count: 86,
-  under_review_count: 143,
-  verified_count: 1055,
-  average_risk_score: 72,
-  total_sanctioned_crores: 245.8,
-  total_expenditure_crores: 184.2,
-  state: 'Jharkhand',
-  jurisdiction: 'State Nodal Authority & District Collectorates'
+  active_projects: 842,
+  completed_projects: 356,
+  projects_under_review: 142,
+  high_risk_projects: 86,
+  critical_alerts: 24,
+  citizen_complaints: 189,
+  pending_inspections: 38,
+  total_monitored_crores: 342.80,
+  average_risk_score: 38
 };
 
-export const RISK_SIGNAL_BREAKDOWN = [
-  { name: 'Computer Vision', percentage: 31, color: '#2563eb', desc: 'Visual progress vs reported disparity, duplicate photo detection, image authenticity' },
-  { name: 'Geospatial', percentage: 24, color: '#0284c7', desc: 'GPS coordinate distance deviation > 500m from registered sanction boundary' },
-  { name: 'Financial', percentage: 19, color: '#d97706', desc: 'Expenditure disbursed ahead of physical completion, unit cost Z-score deviation' },
-  { name: 'Timeline', percentage: 14, color: '#ea580c', desc: 'Unexplained milestone stall, locked start date delay vs Poisson baseline' },
-  { name: 'Citizen + NLP', percentage: 7, color: '#059669', desc: 'Credibility-weighted citizen counter-evidence & contract scope duplicate matching' },
-  { name: 'Contractor History', percentage: 5, color: '#64748b', desc: 'Historical repeat anomaly frequency & multi-territory bidding capture' },
+export const MAP_MARKERS_DATA = [
+  { id: "MPLAD-JH-2026-089", name: "Rural Connectivity Road Upgrade", district: "Ranchi", lat: 23.3441, lng: 85.3096, risk: 87, tier: "Critical", status: "Inspection Ordered", contractor: "ABC Infrastructure", budget: "₹1.20 Cr", progress: "42% (Claimed 80%)", complaints: 3 },
+  { id: "MPLAD-JH-2026-104", name: "Community Health Sub-Centre", district: "Khunti", lat: 23.0748, lng: 85.2789, risk: 22, tier: "Low", status: "Verified", contractor: "ABC Infrastructure", budget: "₹85.00 L", progress: "58%", complaints: 0 },
+  { id: "MPLAD-JH-2026-218", name: "Science Laboratory Complex", district: "Gumla", lat: 23.0441, lng: 84.5422, risk: 34, tier: "Medium", status: "Under Review", contractor: "ABC Infrastructure", budget: "₹65.00 L", progress: "38%", complaints: 1 },
+  { id: "MPLAD-JH-2026-042", name: "Solar Micro-Grid Electrification", district: "Simdega", lat: 22.6167, lng: 84.5000, risk: 18, tier: "Low", status: "Verified", contractor: "Chotanagpur Roadworks", budget: "₹45.00 L", progress: "92%", complaints: 0 },
+  { id: "MPLAD-JH-2026-312", name: "Drinking Water Deep Borewell Pipeline", district: "Dhanbad", lat: 23.7957, lng: 86.4304, risk: 78, tier: "High", status: "Clarification Requested", contractor: "Kalyan Infratech", budget: "₹95.00 L", progress: "35% (Claimed 70%)", complaints: 5 },
+  { id: "MPLAD-JH-2026-440", name: "Anganwadi Early Learning Centre", district: "Hazaribagh", lat: 23.9964, lng: 85.3644, risk: 64, tier: "High", status: "Evidence Pending", contractor: "Shree Ganesh Builders", budget: "₹38.00 L", progress: "25% (Claimed 60%)", complaints: 2 },
+  { id: "MPLAD-JH-2026-505", name: "High-Mast Solar Lighting Hub", district: "Jamshedpur", lat: 22.8046, lng: 86.2029, risk: 15, tier: "Low", status: "Completed", contractor: "Chotanagpur Roadworks", budget: "₹28.00 L", progress: "100%", complaints: 0 }
 ];
 
-export const PRIORITY_RISK_PROJECTS = [
+export const FLAGGED_PROJECTS_DATA = [
   {
-    id: 'MPLAD-JH-2026-089',
-    name: 'Rural Road Improvement & Cross Drainage',
-    district: 'Ranchi',
-    constituency: 'Ranchi Lok Sabha',
-    ward: 'Kanke Block, Ward 12',
-    type: 'Road',
-    sanctioned_amount: '₹ 45.0 Lakhs',
-    sanctioned_amount_raw: 4500000,
-    expenditure: '₹ 38.5 Lakhs',
-    expenditure_pct: 85.5,
-    physical_progress: 45,
-    risk_score: 82,
-    risk_tier: 'Critical',
-    risk_signals: ['GPS mismatch (1.42 km)', 'Progress gap (-40.5%)', 'Disbursement ahead of paving'],
-    last_evidence: '2026-09-06',
-    status: 'Action Required',
-    contractor: 'Jharkhand Infra Highway LLP',
-    contractor_id: 'CON-JH-401',
-    registered_gps: { lat: 23.3441, lng: 85.3096 },
-    evidence_gps: { lat: 23.3552, lng: 85.3214 },
-    deviation_km: 1.42,
-    locked_start_date: '2026-02-15 (LOCKED)',
-    milestones: [
-      { name: 'Sanction Clearance', status: 'Completed', date: '2026-01-10' },
-      { name: 'Actual Start Date', status: 'Locked & Verified', date: '2026-02-15' },
-      { name: 'Earthwork & Subgrade', status: 'Completed', date: '2026-04-12' },
-      { name: 'Granular Sub-Base', status: 'In Progress (CV Flagged)', date: '2026-07-20' },
-      { name: 'Bituminous Paving', status: 'Pending', date: 'Expected 2026-10-30' },
-      { name: 'Final Handover', status: 'Pending', date: 'Expected 2026-12-15' }
+    id: "MPLAD-JH-2026-089",
+    name: "Namkum to Rampur Rural Connectivity Road Upgrade",
+    district: "Ranchi",
+    constituency: "Ranchi",
+    type: "Road",
+    contractor: "ABC Infrastructure Ltd.",
+    risk_score: 87,
+    risk_level: "High",
+    flag_type: "Physical vs Financial Progress Mismatch + GPS Deviation",
+    date_flagged: "2026-08-29",
+    inspection_status: "Inspection Scheduled",
+    assigned_officer: "Er. Alok Ranjan (Executive Engineer, PWD)",
+    recommended_action: "Conduct on-site cross-sectional measurement and verify sub-base compaction.",
+    triggers: [
+      "Contractor claimed 80% completion; Computer Vision model estimates 42% visible progress.",
+      "Photo GPS stamp deviates by 1.42 km from sanctioned alignment.",
+      "3 citizen complaints verified with geo-tagged counter-photographs.",
+      "Financial expenditure disbursed (75%) disproportionate to physical sub-base laying."
     ],
-    evidence_photos: [
-      {
-        id: 'EV-089-01',
-        month: 'August 2026',
-        date: '2026-08-28',
-        authenticity: 'Authentic',
-        duplicate: 'Unique (No Match)',
-        location_match: 'Deviation 1.42 km',
-        location_status: 'Warning',
-        url: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=600&auto=format&fit=crop&q=80'
-      },
-      {
-        id: 'EV-089-02',
-        month: 'July 2026',
-        date: '2026-07-30',
-        authenticity: 'Authentic',
-        duplicate: 'Unique (No Match)',
-        location_match: 'GPS Match',
-        location_status: 'Safe',
-        url: 'https://images.unsplash.com/photo-1590486803833-1c5dc8ddd4c8?w=600&auto=format&fit=crop&q=80'
-      }
-    ]
+    signals: {
+      image_evidence: 82,
+      location_consistency: 91,
+      progress_consistency: 43,
+      financial_pattern: 76,
+      citizen_complaints: 88
+    },
+    citizen_reports_count: 3
   },
   {
-    id: 'MPLAD-JH-2026-114',
-    name: 'Community Health Centre Outpatient Ward',
-    district: 'Khunti',
-    constituency: 'Khunti (ST) Lok Sabha',
-    ward: 'Torpa Block, Sector 4',
-    type: 'Building',
-    sanctioned_amount: '₹ 68.0 Lakhs',
-    sanctioned_amount_raw: 6800000,
-    expenditure: '₹ 51.0 Lakhs',
-    expenditure_pct: 75.0,
-    physical_progress: 35,
-    risk_score: 76,
-    risk_tier: 'High',
-    risk_signals: ['Photo reuse detected (88% similarity)', 'Timeline delay (+75 days)', 'Plinth stalled'],
-    last_evidence: '2026-09-02',
-    status: 'Under Review',
-    contractor: 'Tribal Regional Construction Co.',
-    contractor_id: 'CON-JH-119',
-    registered_gps: { lat: 23.0722, lng: 85.2798 },
-    evidence_gps: { lat: 23.0730, lng: 85.2810 },
-    deviation_km: 0.12,
-    locked_start_date: '2026-01-20 (LOCKED)',
-    milestones: [
-      { name: 'Sanction Clearance', status: 'Completed', date: '2025-12-05' },
-      { name: 'Actual Start Date', status: 'Locked & Verified', date: '2026-01-20' },
-      { name: 'Excavation & Plinth Beam', status: 'Delayed', date: '2026-05-10' },
-      { name: 'RCC Columns & Slab', status: 'Delayed (Work Halted)', date: '2026-08-15' },
-      { name: 'Finishing & Medical Electricals', status: 'Pending', date: 'Expected 2027-01-30' }
+    id: "MPLAD-JH-2026-312",
+    name: "Drinking Water Deep Borewell & Solar Pump Network",
+    district: "Dhanbad",
+    constituency: "Dhanbad",
+    type: "Water Works",
+    contractor: "Kalyan Infratech Pvt Ltd",
+    risk_score: 78,
+    risk_level: "High",
+    flag_type: "Duplicate Photo Hash + Stalled Execution",
+    date_flagged: "2026-09-02",
+    inspection_status: "Clarification Requested",
+    assigned_officer: "Smt. Sunita Besra (Nodal Audit Officer)",
+    recommended_action: "Verify pump serial numbers and pipe depth with hydrological logs.",
+    triggers: [
+      "Image perceptual hash identical to completed 2024 work in Ward 08.",
+      "Claimed 70% progress, but groundwater yield testing certificate not uploaded.",
+      "5 citizen complaints alleging zero water flow at terminal taps."
     ],
-    evidence_photos: [
-      {
-        id: 'EV-114-01',
-        month: 'August 2026',
-        date: '2026-08-25',
-        authenticity: 'Suspicious Duplicate',
-        duplicate: 'Matches MPLAD-JH-2025-042',
-        location_match: 'GPS Match',
-        location_status: 'Warning',
-        url: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=80'
-      }
-    ]
+    signals: {
+      image_evidence: 94,
+      location_consistency: 45,
+      progress_consistency: 38,
+      financial_pattern: 65,
+      citizen_complaints: 90
+    },
+    citizen_reports_count: 5
   },
   {
-    id: 'MPLAD-JH-2026-205',
-    name: 'Minor Irrigation Check Dam & Tubewell Cluster',
-    district: 'Gumla',
-    constituency: 'Lohardaga Lok Sabha',
-    ward: 'Raidih Block, Ward 7',
-    type: 'Water',
-    sanctioned_amount: '₹ 50.0 Lakhs',
-    sanctioned_amount_raw: 5000000,
-    expenditure: '₹ 37.5 Lakhs',
-    expenditure_pct: 75.0,
-    physical_progress: 54,
+    id: "MPLAD-JH-2026-440",
+    name: "Model Anganwadi Early Childhood Development Centre",
+    district: "Hazaribagh",
+    constituency: "Hazaribagh",
+    type: "Building",
+    contractor: "Shree Ganesh Builders",
     risk_score: 64,
-    risk_tier: 'High',
-    risk_signals: ['Financial mismatch (75% outlay vs 54% progress)', 'Citizen counter-report logged'],
-    last_evidence: '2026-08-30',
-    status: 'Field Verification',
-    contractor: 'Chotanagpur Water Works',
-    contractor_id: 'CON-JH-088',
-    registered_gps: { lat: 23.0441, lng: 84.5422 },
-    evidence_gps: { lat: 23.0450, lng: 84.5430 },
-    deviation_km: 0.15,
-    locked_start_date: '2026-03-01 (LOCKED)',
-    milestones: [
-      { name: 'Sanction Clearance', status: 'Completed', date: '2026-02-10' },
-      { name: 'Actual Start Date', status: 'Locked & Verified', date: '2026-03-01' },
-      { name: 'Borewell Drilling & Rig Test', status: 'Completed', date: '2026-05-15' },
-      { name: 'Check Dam Civil Retaining Wall', status: 'In Progress (54%)', date: '2026-08-20' },
-      { name: 'Piping & Distribution Network', status: 'Pending', date: 'Expected 2026-11-30' }
+    risk_level: "High",
+    flag_type: "Premature Tranche Disbursement Anomaly",
+    date_flagged: "2026-09-05",
+    inspection_status: "Evidence Pending",
+    assigned_officer: "Shri Vivek Anand (District Planning Officer)",
+    recommended_action: "Hold 3rd tranche clearance until roof casting verification.",
+    triggers: [
+      "Disbursement reached 60% while visual progress confirms only foundation columns (25%).",
+      "2 citizen grievance submissions reporting halted work since 45 days."
     ],
-    evidence_photos: [
-      {
-        id: 'EV-205-01',
-        month: 'August 2026',
-        date: '2026-08-29',
-        authenticity: 'Authentic',
-        duplicate: 'Unique (No Match)',
-        location_match: 'GPS Match',
-        location_status: 'Safe',
-        url: 'https://images.unsplash.com/photo-1574482620826-40685ca5ebd2?w=600&auto=format&fit=crop&q=80'
-      }
+    signals: {
+      image_evidence: 68,
+      location_consistency: 20,
+      progress_consistency: 30,
+      financial_pattern: 85,
+      citizen_complaints: 70
+    },
+    citizen_reports_count: 2
+  }
+];
+
+export const CITIZEN_PROJECTS_DATA = [
+  {
+    id: "MPLAD-JH-2026-089",
+    name: "Namkum to Rampur Rural Road Upgrade",
+    location: "Namkum, Ranchi (Ward 12)",
+    district: "Ranchi",
+    constituency: "Ranchi",
+    type: "Road Construction",
+    purpose: "Provide all-weather road connectivity to 3 tribal villages and agricultural market.",
+    approved_amount: "₹1.20 Crore",
+    executing_agency: "ABC Infrastructure Ltd. (Sanctioned via District Collectorate)",
+    start_date: "15 Jan 2026",
+    expected_completion: "30 Oct 2026",
+    reported_progress: "42% (Verified)",
+    latest_update: "28 Aug 2026: Subgrade work inspected. Paving pending technical clearance.",
+    images: [
+      "https://images.unsplash.com/photo-1578844251758-2f71da64c96f?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1541888946425-d0fbb18f15f6?w=600&auto=format&fit=crop&q=80"
+    ],
+    verification_status: "Under Government Investigation",
+    status_color: "text-amber-800 bg-amber-50 border-amber-200"
+  },
+  {
+    id: "MPLAD-JH-2026-104",
+    name: "Community Health Sub-Centre",
+    location: "Murhu Block, Khunti",
+    district: "Khunti",
+    constituency: "Khunti (ST)",
+    type: "Healthcare Facility",
+    purpose: "Primary healthcare, maternal care, and emergency first aid facility.",
+    approved_amount: "₹85.00 Lakh",
+    executing_agency: "ABC Infrastructure Ltd.",
+    start_date: "10 Feb 2026",
+    expected_completion: "15 Nov 2026",
+    reported_progress: "58% (Verified)",
+    latest_update: "02 Sep 2026: Brick masonry 85% completed. Roof slab cast successfully.",
+    images: [
+      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&auto=format&fit=crop&q=80"
+    ],
+    verification_status: "Verified & Compliant",
+    status_color: "text-emerald-800 bg-emerald-50 border-emerald-200"
+  },
+  {
+    id: "MPLAD-JH-2026-042",
+    name: "Solar Micro-Grid Electrification",
+    location: "Kolebira Village, Simdega",
+    district: "Simdega",
+    constituency: "Khunti (ST)",
+    type: "Renewable Energy",
+    purpose: "24x7 solar lighting for 180 rural households and community hall.",
+    approved_amount: "₹45.00 Lakh",
+    executing_agency: "Chotanagpur Roadworks Corp",
+    start_date: "05 Jan 2026",
+    expected_completion: "30 Sep 2026",
+    reported_progress: "92% (Near Completion)",
+    latest_update: "01 Sep 2026: Solar panel array and battery storage room commissioning underway.",
+    images: [
+      "https://images.unsplash.com/photo-1509391365360-2e959784a276?w=600&auto=format&fit=crop&q=80"
+    ],
+    verification_status: "Verified & Compliant",
+    status_color: "text-emerald-800 bg-emerald-50 border-emerald-200"
+  }
+];
+
+export const CITIZEN_COMPLAINTS_LIST = [
+  {
+    complaint_id: "GRV-JH-2026-9812",
+    project_id: "MPLAD-JH-2026-089",
+    project_name: "Namkum to Rampur Rural Road Upgrade",
+    citizen_name: "Amit Kumar (Verified Resident)",
+    category: "Work incomplete / Stalled execution",
+    description: "Contractor claimed 80% work done on official signboard, but only stone gravel has been dumped. No tar or bitumen laid. Road is waterlogged and impassable during rains.",
+    date_submitted: "2026-08-27",
+    location: "Namkum, Ranchi (23.3441°N, 85.3096°E)",
+    status: "Field Inspection Scheduled",
+    status_step: 4, // 1: Submitted, 2: AI Classified, 3: Gov Review, 4: Inspection Scheduled, 5: Inspected, 6: Resolved
+    credibility_weight: 0.85,
+    counter_photo_url: "https://images.unsplash.com/photo-1541888946425-d0fbb18f15f6?w=600&auto=format&fit=crop&q=80",
+    history: [
+      { step: "Submitted", date: "2026-08-27 10:14 IST", detail: "Grievance registered with geo-tagged photo proof." },
+      { step: "AI-Assisted Classification", date: "2026-08-27 10:15 IST", detail: "AI verified photo authenticity and matched location within 45m of sanction." },
+      { step: "Government Review", date: "2026-08-28 14:30 IST", detail: "Assistant Engineer reviewed complaint alongside contractor claimed 80% milestone." },
+      { step: "Inspection Assigned", date: "2026-08-29 11:00 IST", detail: "Executive Engineer assigned for physical cross-measurement." }
     ]
   },
   {
-    id: 'MPLAD-JH-2026-319',
-    name: 'Government Model School Additional Classrooms',
-    district: 'Simdega',
-    constituency: 'Khunti (ST) Lok Sabha',
-    ward: 'Kolebira Block, Sector 2',
-    type: 'Building',
-    sanctioned_amount: '₹ 32.0 Lakhs',
-    sanctioned_amount_raw: 3200000,
-    expenditure: '₹ 18.0 Lakhs',
-    expenditure_pct: 56.2,
-    physical_progress: 50,
-    risk_score: 58,
-    risk_tier: 'Medium',
-    risk_signals: ['Timeline delay (+45 days)', 'Weather delay documented'],
-    last_evidence: '2026-09-01',
-    status: 'Under Review',
-    contractor: 'Simdega Educational Builders',
-    contractor_id: 'CON-JH-231',
-    registered_gps: { lat: 22.6148, lng: 84.5098 },
-    evidence_gps: { lat: 22.6150, lng: 84.5101 },
-    deviation_km: 0.04,
-    locked_start_date: '2026-02-01 (LOCKED)',
-    milestones: [
-      { name: 'Sanction Clearance', status: 'Completed', date: '2026-01-05' },
-      { name: 'Actual Start Date', status: 'Locked & Verified', date: '2026-02-01' },
-      { name: 'Classroom Structure & Roof Slab', status: 'In Progress (50%)', date: '2026-07-15' },
-      { name: 'Flooring & Desks Setup', status: 'Pending', date: 'Expected 2026-10-30' }
-    ],
-    evidence_photos: [
-      {
-        id: 'EV-319-01',
-        month: 'August 2026',
-        date: '2026-08-30',
-        authenticity: 'Authentic',
-        duplicate: 'Unique',
-        location_match: 'GPS Match',
-        location_status: 'Safe',
-        url: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&auto=format&fit=crop&q=80'
-      }
-    ]
-  },
-  {
-    id: 'MPLAD-JH-2026-442',
-    name: 'High-Mast Solar Lighting in 15 Panchayats',
-    district: 'Dhanbad',
-    constituency: 'Dhanbad Lok Sabha',
-    ward: 'Govindpur Block, Cluster 9',
-    type: 'Solar',
-    sanctioned_amount: '₹ 28.5 Lakhs',
-    sanctioned_amount_raw: 2850000,
-    expenditure: '₹ 28.0 Lakhs',
-    expenditure_pct: 98.2,
-    physical_progress: 95,
-    risk_score: 22,
-    risk_tier: 'Low',
-    risk_signals: ['All milestones verified', 'Citizen confirmation 96%'],
-    last_evidence: '2026-09-04',
-    status: 'Verified',
-    contractor: 'Eastern Solar Power Corp',
-    contractor_id: 'CON-JH-045',
-    registered_gps: { lat: 23.7957, lng: 86.4304 },
-    evidence_gps: { lat: 23.7958, lng: 86.4302 },
-    deviation_km: 0.02,
-    locked_start_date: '2026-03-15 (LOCKED)',
-    milestones: [
-      { name: 'Sanction Clearance', status: 'Completed', date: '2026-02-20' },
-      { name: 'Actual Start Date', status: 'Locked & Verified', date: '2026-03-15' },
-      { name: 'Pole Civil Foundation', status: 'Completed', date: '2026-04-30' },
-      { name: 'PV Module Erection', status: 'Completed', date: '2026-06-30' },
-      { name: 'Automation Testing', status: 'Completed & Certified', date: '2026-08-25' }
-    ],
-    evidence_photos: [
-      {
-        id: 'EV-442-01',
-        month: 'August 2026',
-        date: '2026-08-26',
-        authenticity: 'Authentic',
-        duplicate: 'Unique',
-        location_match: 'GPS Match',
-        location_status: 'Safe',
-        url: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?w=600&auto=format&fit=crop&q=80'
-      }
+    complaint_id: "GRV-JH-2026-4401",
+    project_id: "MPLAD-JH-2026-312",
+    project_name: "Drinking Water Deep Borewell & Solar Pump Network",
+    citizen_name: "Sunil Marandi (Resident)",
+    category: "Suspected misuse of funds / No water yield",
+    description: "Borewell drilled only 120 feet instead of mandatory 450 feet specification. No water flow for last 3 weeks. Solar panel wiring left exposed.",
+    date_submitted: "2026-08-30",
+    location: "Govindpur, Dhanbad",
+    status: "Investigation in Progress",
+    status_step: 3,
+    credibility_weight: 0.80,
+    counter_photo_url: "https://images.unsplash.com/photo-1584467735815-f778f274e296?w=600&auto=format&fit=crop&q=80",
+    history: [
+      { step: "Submitted", date: "2026-08-30 09:20 IST", detail: "Grievance submitted by Ward Committee." },
+      { step: "AI-Assisted Classification", date: "2026-08-30 09:22 IST", detail: "High-priority water utility flag assigned." },
+      { step: "Government Review", date: "2026-09-01 16:00 IST", detail: "Contractor served 7-day notice for hydrological yield test logs." }
     ]
   }
 ];
 
-export const CONTRACTORS_DATA = [
-  {
-    id: 'CON-JH-401',
-    name: 'Jharkhand Infra Highway LLP',
-    reg_id: 'GSTIN-20AABCI9928K1Z3',
-    district: 'Ranchi',
-    active_projects: 8,
-    completed_projects: 14,
-    avg_delay_days: 42,
-    completion_rate: 64,
-    risk_status: 'Flagged for Audit',
-    anomaly_patterns: ['GPS location drift in 3 projects', 'Progress-disbursement gaps'],
-    total_awarded_crores: 12.8
-  },
-  {
-    id: 'CON-JH-119',
-    name: 'Tribal Regional Construction Co.',
-    reg_id: 'GSTIN-20AAACT4411P1Z9',
-    district: 'Khunti',
-    active_projects: 5,
-    completed_projects: 22,
-    avg_delay_days: 68,
-    completion_rate: 78,
-    risk_status: 'Under Verification',
-    anomaly_patterns: ['Suspected duplicate photo submission in Torpa Block'],
-    total_awarded_crores: 9.4
-  },
-  {
-    id: 'CON-JH-088',
-    name: 'Chotanagpur Water Works',
-    reg_id: 'GSTIN-20AACCC7712M1Z1',
-    district: 'Gumla',
-    active_projects: 6,
-    completed_projects: 31,
-    avg_delay_days: 18,
-    completion_rate: 88,
-    risk_status: 'Routine Monitoring',
-    anomaly_patterns: ['Single expenditure pace flag on check dam'],
-    total_awarded_crores: 7.6
-  },
-  {
-    id: 'CON-JH-045',
-    name: 'Eastern Solar Power Corp',
-    reg_id: 'GSTIN-20AABCE1190N1Z2',
-    district: 'Dhanbad',
-    active_projects: 12,
-    completed_projects: 48,
-    avg_delay_days: 6,
-    completion_rate: 96,
-    risk_status: 'Compliant & Verified',
-    anomaly_patterns: ['None. 99% GPS conformity across all sites'],
-    total_awarded_crores: 14.2
-  }
+export const NOTIFICATIONS_DATA = [
+  { id: "N-01", role: "admin", type: "critical", title: "High-Risk Anomaly Flagged", desc: "Project MPLAD-JH-2026-089 risk score increased to 87/100 due to correlated contractor vs citizen signals.", time: "10 mins ago", read: false },
+  { id: "N-02", role: "admin", type: "warning", title: "New Citizen Grievance Logged", desc: "3rd independent citizen report received for Namkum Rural Road Upgrade.", time: "1 hour ago", read: false },
+  { id: "N-03", role: "contractor", type: "action", title: "Additional Evidence Required", desc: "MoSPI District Collectorate requested core-cutter compaction test report for Milestone 3.", time: "2 hours ago", read: false },
+  { id: "N-04", role: "contractor", type: "info", title: "Submission Verified", desc: "Project MPLAD-JH-2026-104 (Khunti Health Centre) 60% milestone cleared.", time: "1 day ago", read: true },
+  { id: "N-05", role: "citizen", type: "success", title: "Grievance Update: GRV-JH-2026-9812", desc: "Executive Engineer assigned for on-site physical verification on 10 Sep 2026.", time: "3 hours ago", read: false }
 ];
 
-export const CITIZEN_FEEDBACK_DATA = [
+export const AUDIT_TRAIL_RECORDS = [
   {
-    id: 'CF-2026-104',
-    project_id: 'MPLAD-JH-2026-089',
-    project_name: 'Rural Road Improvement & Cross Drainage',
-    citizen_name: 'Anand Kumar M. (Verified Citizen)',
-    credibility_score: 84,
-    feedback_weight: 0.84,
-    issue_category: 'Road Earthwork Discrepancy',
-    description: 'Contractor claimed 85% completion, but only initial earth leveling is done. No bitumen or gravel laid on Kanke link.',
-    has_photo: true,
-    photo_gps: '23.3442° N, 85.3098° E (Match)',
-    submitted_date: '2026-09-05',
-    status: 'Incorporated into Risk Score (+14 pts)'
+    audit_id: "AUD-2026-9018",
+    timestamp: "2026-09-09 16:45:10 IST",
+    user: "Er. Alok Ranjan (Inspection Officer)",
+    action: "FIELD INSPECTION REPORT SUBMITTED",
+    project_id: "MPLAD-JH-2026-089",
+    previous_status: "Inspection Scheduled",
+    new_status: "Inspection Report Filed",
+    reason: "On-site core cross-section confirmed only 42% physical progress. WMM base thickness deficient by 40mm.",
+    approval: "PW-INSP-REC-891"
   },
   {
-    id: 'CF-2026-092',
-    project_id: 'MPLAD-JH-2026-114',
-    project_name: 'Community Health Centre Outpatient Ward',
-    citizen_name: 'Priya Soren (Panchayat Member)',
-    credibility_score: 92,
-    feedback_weight: 0.92,
-    issue_category: 'Work Stalled / Abandoned',
-    description: 'Site locked since early June. Bricks piled outside getting damaged by rain.',
-    has_photo: true,
-    photo_gps: '23.0724° N, 85.2801° E (Match)',
-    submitted_date: '2026-09-01',
-    status: 'Field Inspection Ordered'
+    audit_id: "AUD-2026-8942",
+    timestamp: "2026-08-29 11:00:24 IST",
+    user: "Dr. Rameshwar Oraon (State Nodal Officer)",
+    action: "FIELD VERIFICATION ORDERED",
+    project_id: "MPLAD-JH-2026-089",
+    previous_status: "AI Flagged",
+    new_status: "Inspection Scheduled",
+    reason: "Correlated disparity between 80% contractor claim, 42% CV estimate, and citizen grievance GRV-JH-2026-9812.",
+    approval: "DOD-MPLAD-JH-2026-089"
   },
   {
-    id: 'CF-2026-081',
-    project_id: 'MPLAD-JH-2026-442',
-    project_name: 'High-Mast Solar Lighting in 15 Panchayats',
-    citizen_name: 'Rameshwar Mahto',
-    credibility_score: 80,
-    feedback_weight: 0.80,
-    issue_category: 'Positive / Verified Functional',
-    description: 'All 8 solar high-masts in Govindpur cluster are operational with automatic dusk switching.',
-    has_photo: true,
-    photo_gps: '23.7957° N, 86.4304° E (Match)',
-    submitted_date: '2026-08-28',
-    status: 'Positive Compliance Logged'
+    audit_id: "AUD-2026-8710",
+    timestamp: "2026-08-28 10:15:00 IST",
+    user: "FundGuard Multi-Signal AI Engine",
+    action: "RISK SCORE SPIKE DETECTED",
+    project_id: "MPLAD-JH-2026-089",
+    previous_status: "Under Review (Score: 45)",
+    new_status: "High Risk (Score: 87)",
+    reason: "Computer Vision visual estimation (42%) diverged from claimed 80% combined with 1.42 km photo GPS deviation.",
+    approval: "AI-SYS-AUTO-FLAG"
+  },
+  {
+    audit_id: "AUD-2026-8501",
+    timestamp: "2026-08-27 10:14:32 IST",
+    user: "Amit Kumar (Citizen - Verified)",
+    action: "CITIZEN GRIEVANCE REGISTERED",
+    project_id: "MPLAD-JH-2026-089",
+    previous_status: "Normal",
+    new_status: "Citizen Flagged",
+    reason: "Citizen counter-photo submitted alleging impassable gravel road without bituminous surfacing.",
+    approval: "GRV-JH-2026-9812"
+  },
+  {
+    audit_id: "AUD-2026-8100",
+    timestamp: "2026-08-26 14:20:10 IST",
+    user: "ABC Infrastructure Ltd. (Contractor)",
+    action: "PROGRESS SUBMISSION UPLOADED",
+    project_id: "MPLAD-JH-2026-089",
+    previous_status: "Milestone 2 Cleared",
+    new_status: "Under Review",
+    reason: "Contractor submitted Milestone 3 claiming 80% physical progress and ₹90L expenditure bill.",
+    approval: "SUB-CON-2026-089-M3"
   }
 ];
-
-export const AUDIT_TRAIL_DATA = [
-  {
-    audit_id: 'AUD-2026-9041',
-    timestamp: '2026-09-09 18:24:12 IST',
-    user: 'Dr. S. K. Verma (District Collector, Ranchi)',
-    action: 'Payment Moratorium Triggered',
-    project_id: 'MPLAD-JH-2026-089',
-    previous_value: 'Disbursement: In Progress (Tranche 3)',
-    new_value: 'Disbursement: On Hold (Moratorium)',
-    reason: 'AI Risk Score 82. Computer Vision progress divergence (45% vs 85.5% expenditure) and 1.42 km GPS mismatch.',
-    approval: 'District Vigilance Committee Ref #DVC-441/26'
-  },
-  {
-    audit_id: 'AUD-2026-9038',
-    timestamp: '2026-09-08 14:10:05 IST',
-    user: 'Amitabh Roy (Executive Engineer, PWD Khunti)',
-    action: 'Field Inspection Dispatched',
-    project_id: 'MPLAD-JH-2026-114',
-    previous_value: 'Status: AI Flagged',
-    new_value: 'Status: Under Field Verification',
-    reason: 'Potential photo reuse flag detected against 2025 archived sanction in adjacent ward.',
-    approval: 'Executive Order #EE-KHU-89'
-  },
-  {
-    audit_id: 'AUD-2026-9012',
-    timestamp: '2026-09-05 11:30:40 IST',
-    user: 'System (FundGuard AI Engine)',
-    action: 'Risk Score Updated',
-    project_id: 'MPLAD-JH-2026-205',
-    previous_value: 'Risk Score: 48 (Medium)',
-    new_value: 'Risk Score: 64 (High)',
-    reason: 'Monthly expenditure report filed for 75% funds while physical progress remains at 54%.',
-    approval: 'Autonomous Signal Fusion Batch #8812'
-  },
-  {
-    audit_id: 'AUD-2026-8994',
-    timestamp: '2026-08-26 16:45:00 IST',
-    user: 'K. N. Mishra (MoSPI State Nodal Officer)',
-    action: 'Compliance Certification',
-    project_id: 'MPLAD-JH-2026-442',
-    previous_value: 'Status: Pending Verification',
-    new_value: 'Status: Verified & Cleared',
-    reason: '100% photo authenticity, 0.02km GPS conformance, and 15 citizen counter-confirmations verified.',
-    approval: 'MoSPI Clearance Docket #JH-DHN-2026-01'
-  }
-];
-
-export const CV_SECTOR_PIPELINES = {
-  'Road': {
-    title: 'Rural & Urban Roadworks Pipeline',
-    stages: ['Earthwork & Clearing', 'Subgrade Compaction', 'Granular Base Layer', 'Bituminous Paving', 'Shoulders & Markings', 'Completion'],
-    typical_signals: ['Surface texture classification (gravel vs asphalt)', 'Pavement edge boundary detection', 'Roller equipment presence']
-  },
-  'Building': {
-    title: 'Public Buildings & Schools Pipeline',
-    stages: ['Excavation & Plinth', 'Reinforced Columns', 'Brick Masonry Walls', 'Roof Slab Casting', 'Plastering & Electrical', 'Finishing & Handover'],
-    typical_signals: ['Structural skeleton detection', 'Concrete curing stage index', 'Fenestration & roof integrity']
-  },
-  'Bridge': {
-    title: 'Culverts & Bridges Pipeline',
-    stages: ['Foundation & Abutments', 'Pier Construction', 'Deck Slab Casting', 'Parapets & Railings', 'Load Testing & Commissioning'],
-    typical_signals: ['Span alignment geometry', 'Waterway clearance measurement', 'Concrete reinforcement analysis']
-  },
-  'Drainage': {
-    title: 'Stormwater & Sanitation Pipeline',
-    stages: ['Trench Excavation', 'PCC Base Bedding', 'Side Wall Masonry', 'Reinforced Cover Slabs', 'Outfall Connection & Flow Clearance'],
-    typical_signals: ['Trench depth consistency', 'Culvert gradient slope check', 'Precast cover slab verification']
-  }
-};
