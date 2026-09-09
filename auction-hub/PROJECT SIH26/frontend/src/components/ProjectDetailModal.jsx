@@ -1,301 +1,129 @@
 import React, { useState } from 'react';
 import { 
-  X, AlertTriangle, ShieldCheck, MapPin, Calendar, 
-  Lock, ArrowRight, Building2, Layers, CheckCircle2, 
-  FileText, Clock, AlertOctagon, TrendingUp 
+  FolderKanban, CheckCircle2, Clock, AlertTriangle, 
+  MapPin, Camera, FileText, ArrowRight, ShieldCheck 
 } from 'lucide-react';
-import { CV_SECTOR_PIPELINES } from '../data/mockData';
+import SectorProgressBar from './SectorProgressBar';
 
-export default function ProjectDetailModal({ project, onClose }) {
+export default function ProjectDetailModal({ project, onClose, onNavigate }) {
+  const [activeTab, setActiveTab] = useState('01');
   if (!project) return null;
 
-  const [activeTab, setActiveTab] = useState('overview');
-  const pipeline = CV_SECTOR_PIPELINES[project.type] || CV_SECTOR_PIPELINES['Building'];
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
-      <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col my-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-2xs overflow-y-auto">
+      <div className="bg-white border border-[#E4E9EF] rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col p-6 space-y-5">
         
-        {/* Modal Top Bar */}
-        <div className="bg-slate-900 text-white p-5 flex items-center justify-between sticky top-0 z-10">
+        {/* Header */}
+        <div className="flex items-start justify-between border-b border-slate-100 pb-3">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs text-blue-300 font-semibold">{project.id}</span>
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                project.risk_score >= 80 ? 'bg-red-500 text-white' :
-                project.risk_score >= 60 ? 'bg-amber-500 text-slate-950' : 'bg-emerald-500 text-white'
-              }`}>
-                Risk Score {project.risk_score}/100 • {project.risk_tier}
-              </span>
-              <span className="text-[10px] font-semibold bg-slate-800 text-slate-300 px-2 py-0.5 rounded">
-                {project.type}
-              </span>
-            </div>
-            <h3 className="text-base font-bold text-white mt-1">{project.name}</h3>
-            <p className="text-xs text-slate-400">
-              {project.ward}, {project.district} • MP Constituency: {project.constituency}
-            </p>
+            <span className="text-xs font-mono font-bold text-slate-400">{project.id || project.sanction_id}</span>
+            <h2 className="text-base font-bold text-[#0F2942] mt-0.5">{project.name || project.project_name}</h2>
+            <span className="text-xs text-slate-500">{project.district} • {project.type || project.work_category}</span>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white transition"
+            className="text-slate-400 hover:text-slate-700 font-bold p-1"
           >
-            <X className="w-5 h-5" />
+            ✕ Close
           </button>
         </div>
 
-        {/* Modal Subtabs */}
-        <div className="bg-slate-50 border-b border-slate-200 px-5 flex gap-2">
-          {[
-            { id: 'overview', label: 'Overview & Verification' },
-            { id: 'cv-pipeline', label: 'Computer Vision Pipeline' },
-            { id: 'financial', label: 'Financial & Timeline' },
-            { id: 'evidence', label: 'Photo Evidence Gallery' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`py-3 px-3 text-xs font-semibold border-b-2 transition ${
-                activeTab === tab.id
-                  ? 'border-blue-600 text-blue-900'
-                  : 'border-transparent text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        {/* 4 Tabs */}
+        <div className="grid grid-cols-4 gap-1.5 bg-[#F6F8FB] p-1 rounded-xl border border-[#E4E9EF] text-xs font-semibold">
+          {['01 Overview', '02 Evidence', '03 AI Analysis', '04 History'].map((t, i) => {
+            const code = `0${i + 1}`;
+            return (
+              <button
+                key={t}
+                onClick={() => setActiveTab(code)}
+                className={`py-1.5 rounded-lg transition ${
+                  activeTab === code ? 'bg-white text-[#123B67] font-bold shadow-2xs' : 'text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                {t}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Modal Content */}
-        <div className="p-6 space-y-6 text-xs text-slate-700 flex-1">
-          
-          {activeTab === 'overview' && (
-            <div className="space-y-5">
-              
-              {/* Locked Start Date Notice */}
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl flex items-start gap-3">
-                <Lock className="w-5 h-5 text-blue-800 shrink-0 mt-0.5" />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-blue-900 uppercase">Actual Start Date: {project.locked_start_date}</span>
-                    <span className="text-[10px] font-bold bg-blue-200 text-blue-900 px-1.5 py-0.2 rounded font-mono">LOCKED</span>
-                  </div>
-                  <p className="text-xs text-blue-800 mt-0.5">
-                    Locked after authority confirmation. Changes require high-level approval and are recorded in the immutable audit trail.
-                  </p>
-                </div>
+        {/* Tab 01: Overview */}
+        {activeTab === '01' && (
+          <div className="space-y-4 text-xs">
+            <SectorProgressBar type={project.type || 'Road'} currentStageIndex={2} />
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <div className="p-3 bg-[#F6F8FB] rounded-lg border border-[#E4E9EF]">
+                <span className="text-slate-400 block text-[10px] uppercase">Sanction Outlay</span>
+                <span className="font-bold text-[#0F2942] font-mono text-sm">{project.sanctioned_amount || '₹1.20 Cr'}</span>
               </div>
-
-              {/* Key Attributes */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                  <span className="text-[10px] text-slate-500 block">Sanctioned Outlay</span>
-                  <span className="text-sm font-bold text-slate-900 font-mono">{project.sanctioned_amount}</span>
-                </div>
-                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                  <span className="text-[10px] text-slate-500 block">Reported Expenditure</span>
-                  <span className="text-sm font-bold text-amber-700 font-mono">{project.expenditure} ({project.expenditure_pct}%)</span>
-                </div>
-                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                  <span className="text-[10px] text-slate-500 block">Observed Progress</span>
-                  <span className="text-sm font-bold text-blue-700 font-mono">{project.physical_progress}%</span>
-                </div>
-                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                  <span className="text-[10px] text-slate-500 block">Assigned Contractor</span>
-                  <span className="text-xs font-bold text-slate-900 truncate block">{project.contractor}</span>
-                  <span className="text-[10px] text-slate-400 font-mono">{project.contractor_id}</span>
-                </div>
-              </div>
-
-              {/* Progress Milestones Timeline */}
-              <div className="border border-slate-200 rounded-xl p-4 space-y-3">
-                <span className="font-bold text-slate-900 text-xs block">Project Execution Timeline:</span>
-                <div className="space-y-2">
-                  {project.milestones?.map((m, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-2 rounded bg-slate-50 border border-slate-200/80">
-                      <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-[10px]">
-                          {idx + 1}
-                        </span>
-                        <span className="font-semibold text-slate-800">{m.name}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-slate-500 text-[11px]">{m.date}</span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                          m.status.includes('Completed') ? 'bg-emerald-100 text-emerald-800' :
-                          m.status.includes('Delayed') || m.status.includes('Flagged') ? 'bg-red-100 text-red-800' : 'bg-slate-200 text-slate-700'
-                        }`}>
-                          {m.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-            </div>
-          )}
-
-          {activeTab === 'cv-pipeline' && (
-            <div className="space-y-5">
-              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-slate-900">{pipeline.title}</span>
-                  <span className="text-[10px] font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded">Sector-Specific Model</span>
-                </div>
-                <p className="text-xs text-slate-600">
-                  FundGuard AI runs category-tuned Computer Vision pipelines. We do NOT use one generic progress model for all works.
-                </p>
-              </div>
-
-              {/* Stages Ribbon */}
-              <div className="border border-slate-200 rounded-xl p-4 space-y-3">
-                <span className="font-bold text-slate-900 block">Classified Construction Stages:</span>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {pipeline.stages.map((st, i) => (
-                    <div key={i} className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 font-medium flex items-center gap-2">
-                      <span className="w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-[9px] font-bold">
-                        {i + 1}
-                      </span>
-                      <span className="text-[11px] truncate">{st}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Visual Features */}
-              <div className="border border-slate-200 rounded-xl p-4 space-y-2">
-                <span className="font-bold text-slate-900 block">Deep Vision Signatures Analyzed:</span>
-                <ul className="space-y-1 text-slate-600 list-disc list-inside">
-                  {pipeline.typical_signals.map((sig, i) => (
-                    <li key={i}>{sig}</li>
-                  ))}
-                </ul>
+              <div className="p-3 bg-[#F6F8FB] rounded-lg border border-[#E4E9EF]">
+                <span className="text-slate-400 block text-[10px] uppercase">Physical Progress</span>
+                <span className="font-bold text-[#1D5D9B] font-mono text-sm">{project.visual_progress || 42}%</span>
               </div>
             </div>
-          )}
-
-          {activeTab === 'financial' && (
-            <div className="space-y-5">
-              {/* Financial Progress Mismatch Visual */}
-              <div className="p-5 bg-amber-50/60 border border-amber-200 rounded-xl space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="font-bold text-amber-900 text-xs block">EXPENDITURE VS PHYSICAL PROGRESS DISPARITY</span>
-                    <span className="text-xs text-amber-800">Anomaly requiring technical verification</span>
-                  </div>
-                  <span className="text-xs font-bold text-red-700 bg-red-100 px-2 py-1 rounded border border-red-200">
-                    ⚠ Mismatch Flagged
-                  </span>
-                </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex items-center justify-between font-semibold mb-1 text-slate-700">
-                      <span>FINANCIAL UTILIZATION DISBURSED</span>
-                      <span className="font-mono text-amber-800 font-bold">{project.expenditure_pct}%</span>
-                    </div>
-                    <div className="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
-                      <div className="h-full bg-amber-500 rounded-full" style={{ width: `${project.expenditure_pct}%` }}></div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between font-semibold mb-1 text-slate-700">
-                      <span>CV VISUAL PROGRESS OBSERVED</span>
-                      <span className="font-mono text-blue-800 font-bold">{project.physical_progress}%</span>
-                    </div>
-                    <div className="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
-                      <div className="h-full bg-blue-600 rounded-full" style={{ width: `${project.physical_progress}%` }}></div>
-                    </div>
-                  </div>
-                </div>
-
-                <p className="text-[11px] text-amber-900 leading-relaxed pt-1 border-t border-amber-200/80">
-                  Note: Disparities indicate milestone risk and schedule slippage. FundGuard AI does not automatically declare fraud — it prioritizes ground technical inspection.
-                </p>
-              </div>
-
-              {/* Geospatial GPS Match */}
-              <div className="border border-slate-200 rounded-xl p-4 space-y-2">
-                <span className="font-bold text-slate-900 block">Geospatial Distance Verification:</span>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-2.5 bg-slate-50 rounded border border-slate-200">
-                    <span className="text-[10px] text-slate-500 block">Registered Sanction Coords</span>
-                    <span className="font-mono font-bold text-slate-800">{project.registered_gps.lat}°N, {project.registered_gps.lng}°E</span>
-                  </div>
-                  <div className="p-2.5 bg-slate-50 rounded border border-slate-200">
-                    <span className="text-[10px] text-slate-500 block">Evidence GPS Coords</span>
-                    <span className="font-mono font-bold text-slate-800">{project.evidence_gps.lat}°N, {project.evidence_gps.lng}°E</span>
-                  </div>
-                </div>
-                <div className="text-xs text-slate-700 flex items-center justify-between pt-1">
-                  <span>Distance Deviation: <strong className="text-red-700 font-mono">{project.deviation_km} km</strong></span>
-                  <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded">
-                    ⚠ Requires Physical Inspection
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'evidence' && (
-            <div className="space-y-4">
-              <span className="font-bold text-slate-900 block">Submitted Monthly Photo Evidence Dossier:</span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {project.evidence_photos?.map((ev, i) => (
-                  <div key={i} className="border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
-                    <img src={ev.url} alt="Evidence" className="w-full h-40 object-cover" />
-                    <div className="p-3 space-y-1.5 bg-slate-50">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-800">{ev.month}</span>
-                        <span className="text-[10px] text-slate-500">{ev.date}</span>
-                      </div>
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
-                          ✓ {ev.authenticity}
-                        </span>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200">
-                          {ev.duplicate}
-                        </span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                          ev.location_status === 'Warning' ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                        }`}>
-                          {ev.location_match}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-        </div>
-
-        {/* Modal Actions */}
-        <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
-          <span className="text-[11px] text-slate-500">
-            Audit Reference: <strong className="font-mono text-slate-700">DOD-MPLAD-{project.id}</strong>
-          </span>
-          <div className="flex gap-2">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 rounded-lg bg-white border border-slate-300 text-slate-700 font-semibold text-xs hover:bg-slate-50 transition"
-            >
-              Close
-            </button>
-            <button
-              onClick={() => {
-                alert(`Order Dispatched: Field verification inspector assigned to ${project.id}`);
-                onClose();
-              }}
-              className="px-4 py-2 rounded-lg bg-blue-900 text-white font-semibold text-xs hover:bg-blue-800 transition flex items-center gap-1.5 shadow-sm"
-            >
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Dispatch Field Verification</span>
-            </button>
           </div>
+        )}
+
+        {/* Tab 02: Evidence */}
+        {activeTab === '02' && (
+          <div className="space-y-3 text-xs">
+            <span className="font-bold text-[#0F2942] block">Verified Camera Evidence</span>
+            <div className="h-44 rounded-xl overflow-hidden bg-slate-200 relative">
+              <img 
+                src="https://images.unsplash.com/photo-1578844251758-2f71da64c96f?w=600&auto=format&fit=crop&q=80" 
+                alt="Evidence" 
+                className="w-full h-full object-cover"
+              />
+              <span className="absolute bottom-2 left-2 bg-black/70 text-white text-[9px] font-mono px-2 py-0.5 rounded">
+                Captured: 28 Aug 2026 • 23.3441° N, 85.3096° E
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 03: AI Analysis */}
+        {activeTab === '03' && (
+          <div className="space-y-3 text-xs">
+            <div className="flex justify-between items-center p-3 bg-[#FDF2F2] rounded-lg border border-[#F8D7DA]">
+              <span className="font-bold text-[#C95752]">Risk Score: {project.risk_score || 82} / 100</span>
+              <span className="text-[10px] font-bold bg-white text-[#C95752] px-2 py-0.5 rounded">High Priority</span>
+            </div>
+            <div className="p-3 bg-[#F6F8FB] rounded-lg border border-[#E4E9EF] text-slate-700">
+              Notice: AI-generated assessment — official physical verification required before any administrative action.
+            </div>
+          </div>
+        )}
+
+        {/* Tab 04: History */}
+        {activeTab === '04' && (
+          <div className="space-y-2 text-xs">
+            <div className="p-2.5 bg-[#F6F8FB] rounded border border-[#E4E9EF] flex justify-between">
+              <span>AI Flag Generated</span>
+              <span className="font-mono text-slate-400">28 Aug 2026</span>
+            </div>
+            <div className="p-2.5 bg-[#F6F8FB] rounded border border-[#E4E9EF] flex justify-between">
+              <span>Citizen Grievance Linked</span>
+              <span className="font-mono text-slate-400">20 Aug 2026</span>
+            </div>
+          </div>
+        )}
+
+        {/* Footer */}
+        <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs"
+          >
+            Close
+          </button>
+          <button
+            onClick={() => {
+              onClose();
+              onNavigate('admin-investigation');
+            }}
+            className="px-4 py-2 bg-[#123B67] hover:bg-[#1D5D9B] text-white font-semibold rounded-lg text-xs"
+          >
+            Deep Investigation Dossier
+          </button>
         </div>
 
       </div>

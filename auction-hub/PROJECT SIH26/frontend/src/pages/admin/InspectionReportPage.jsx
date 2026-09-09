@@ -3,6 +3,7 @@ import {
   FileCheck, CheckCircle2, AlertTriangle, MapPin, 
   Calendar, Camera, User, ArrowRight, ShieldCheck, FileText 
 } from 'lucide-react';
+import GovernancePrincipleBanner from '../../components/GovernancePrincipleBanner';
 
 export default function InspectionReportPage({ onNavigate }) {
   const [officerName, setOfficerName] = useState('Er. Alok Ranjan (Executive Engineer, PWD)');
@@ -20,42 +21,42 @@ export default function InspectionReportPage({ onNavigate }) {
 
   if (submitted) {
     return (
-      <div className="max-w-2xl mx-auto bg-white border border-slate-200 rounded-2xl p-8 text-center space-y-5 shadow-sm">
-        <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto">
-          <CheckCircle2 className="w-10 h-10" />
+      <div className="max-w-2xl mx-auto bg-white border border-[#C6E6E1] rounded-2xl p-8 text-center space-y-4 shadow-sm">
+        <div className="w-14 h-14 bg-[#F0F7F6] text-[#168A78] rounded-full flex items-center justify-center mx-auto">
+          <CheckCircle2 className="w-8 h-8" />
         </div>
         <div className="space-y-1">
-          <h2 className="text-xl font-bold text-slate-900">Official Inspection Report Filed & Sealed</h2>
+          <h2 className="text-lg font-bold text-[#0F2942]">Official Inspection Report Filed & Sealed</h2>
           <p className="text-xs text-slate-500">
-            Inspection Docket ID: <strong className="font-mono text-slate-700">INSP-JH-2026-089-R1</strong> • Recorded in Audit Trail
+            Inspection Docket ID: <strong className="font-mono text-slate-800">INSP-JH-2026-089-R1</strong> • Recorded in Audit Trail
           </p>
         </div>
 
-        <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-left text-xs space-y-2 text-slate-700">
-          <div className="flex justify-between border-b border-slate-200 pb-1.5">
+        <div className="p-4 bg-[#F6F8FB] rounded-xl border border-[#E4E9EF] text-left text-xs space-y-2 text-slate-700">
+          <div className="flex justify-between border-b border-[#E4E9EF] pb-1.5">
             <span className="text-slate-500">Inspected Physical Progress:</span>
-            <span className="font-bold text-blue-700 font-mono">{actualProgress}% (Claimed: 80%)</span>
+            <span className="font-bold text-[#1D5D9B] font-mono">{actualProgress}% (Claimed: 80%)</span>
           </div>
-          <div className="flex justify-between border-b border-slate-200 pb-1.5">
+          <div className="flex justify-between border-b border-[#E4E9EF] pb-1.5">
             <span className="text-slate-500">Statutory Decision:</span>
-            <span className="font-bold text-amber-800">{recommendedDecision}</span>
+            <span className="font-bold text-[#C58A2B]">{recommendedDecision}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-slate-500">Audit Status:</span>
-            <span className="font-bold text-emerald-700">Permanent Cryptographic Log Created</span>
+            <span className="font-bold text-[#168A78]">Permanent Cryptographic Log Created</span>
           </div>
         </div>
 
         <div className="flex justify-center gap-3 pt-2">
           <button
             onClick={() => onNavigate('admin-dashboard')}
-            className="px-5 py-2.5 bg-blue-900 hover:bg-blue-800 text-white font-bold rounded-lg text-xs"
+            className="px-4 py-2 bg-[#123B67] hover:bg-[#1D5D9B] text-white font-bold rounded-lg text-xs"
           >
-            Return to Command Center
+            Return to Command Hub
           </button>
           <button
             onClick={() => onNavigate('audit-trail')}
-            className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs"
+            className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs"
           >
             View in Immutable Audit Trail
           </button>
@@ -68,20 +69,22 @@ export default function InspectionReportPage({ onNavigate }) {
     <div className="max-w-3xl mx-auto space-y-6">
       
       {/* Header */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
+      <div className="bg-white border border-[#E4E9EF] rounded-xl p-5 shadow-2xs flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-2 text-blue-900 font-bold text-xs uppercase tracking-wider">
-            <FileCheck className="w-4 h-4 text-blue-700" />
-            <span>Screen 10: Official Statutory Inspection Report</span>
+          <div className="flex items-center gap-2 text-[#123B67] font-bold text-xs uppercase tracking-wider">
+            <FileCheck className="w-4 h-4 text-[#1D5D9B]" />
+            <span>Official Statutory Inspection Report</span>
           </div>
-          <h2 className="text-base font-bold text-slate-900 mt-0.5">
+          <h1 className="text-base font-bold text-[#0F2942] mt-0.5">
             File Technical Field Observations & Final Authority Decision
-          </h2>
+          </h1>
         </div>
       </div>
 
+      <GovernancePrincipleBanner />
+
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs space-y-5 text-xs">
+      <form onSubmit={handleSubmit} className="bg-white border border-[#E4E9EF] rounded-xl p-6 shadow-2xs space-y-4 text-xs">
         
         {/* Project & Officer Info */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -90,8 +93,8 @@ export default function InspectionReportPage({ onNavigate }) {
             <input
               type="text"
               readOnly
-              value="MPLAD-JH-2026-089: Namkum to Rampur Rural Road Upgrade"
-              className="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-lg text-xs text-slate-800 font-semibold"
+              value="MPLAD-JH-2026-089: Namkum Rural Road Upgrade"
+              className="w-full px-3 py-2 bg-[#F6F8FB] border border-[#E4E9EF] rounded-lg text-xs text-slate-800 font-semibold"
             />
           </div>
           <div>
@@ -101,12 +104,12 @@ export default function InspectionReportPage({ onNavigate }) {
               value={officerName}
               onChange={(e) => setOfficerName(e.target.value)}
               required
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 font-semibold focus:outline-none focus:border-blue-500 focus:bg-white"
+              className="w-full px-3 py-2 bg-[#F6F8FB] border border-[#E4E9EF] rounded-lg text-xs text-slate-800 font-semibold focus:outline-none focus:border-[#1D5D9B]"
             />
           </div>
         </div>
 
-        {/* GPS Verification & Actual Progress */}
+        {/* Physical Progress */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block font-bold text-slate-700 mb-1">Observed Physical Progress (%)</label>
@@ -117,7 +120,7 @@ export default function InspectionReportPage({ onNavigate }) {
               value={actualProgress}
               onChange={(e) => setActualProgress(Number(e.target.value))}
               required
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 font-mono font-bold focus:outline-none focus:border-blue-500 focus:bg-white"
+              className="w-full px-3 py-2 bg-[#F6F8FB] border border-[#E4E9EF] rounded-lg text-xs text-slate-800 font-mono font-bold focus:outline-none focus:border-[#1D5D9B]"
             />
           </div>
           <div>
@@ -127,7 +130,7 @@ export default function InspectionReportPage({ onNavigate }) {
               value={qualityScore}
               onChange={(e) => setQualityScore(e.target.value)}
               required
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white"
+              className="w-full px-3 py-2 bg-[#F6F8FB] border border-[#E4E9EF] rounded-lg text-xs text-slate-800 focus:outline-none focus:border-[#1D5D9B]"
             />
           </div>
         </div>
@@ -140,30 +143,8 @@ export default function InspectionReportPage({ onNavigate }) {
             value={findings}
             onChange={(e) => setFindings(e.target.value)}
             required
-            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white"
+            className="w-full bg-[#F6F8FB] border border-[#E4E9EF] rounded-lg p-3 text-xs text-slate-800 focus:outline-none focus:border-[#1D5D9B]"
           />
-        </div>
-
-        {/* Contractor Explanation & Citizen Grievance Link */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block font-bold text-slate-700 mb-1">Contractor Representation Received</label>
-            <textarea
-              rows={2}
-              value={contractorExplanation}
-              onChange={(e) => setContractorExplanation(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:bg-white"
-            />
-          </div>
-          <div>
-            <label className="block font-bold text-slate-700 mb-1">Citizen Grievance Cross-Reference</label>
-            <input
-              type="text"
-              readOnly
-              value="GRV-JH-2026-9812 (Amit Kumar — Waterlogging & missing tar verified)"
-              className="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-lg text-xs text-slate-700"
-            />
-          </div>
         </div>
 
         {/* Final Decision */}
@@ -172,7 +153,7 @@ export default function InspectionReportPage({ onNavigate }) {
           <select
             value={recommendedDecision}
             onChange={(e) => setRecommendedDecision(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-900 focus:outline-none focus:border-blue-500 focus:bg-white"
+            className="w-full px-3 py-2 bg-[#F6F8FB] border border-[#E4E9EF] rounded-lg text-xs font-bold text-slate-900 focus:outline-none focus:border-[#1D5D9B]"
           >
             <option value="Hold Tranche 3 Payment & Grant 30-Day Rectification Notice">
               Hold Tranche 3 Payment & Grant 30-Day Rectification Notice to Contractor
@@ -190,13 +171,13 @@ export default function InspectionReportPage({ onNavigate }) {
           <button
             type="button"
             onClick={() => onNavigate('admin-dashboard')}
-            className="px-4 py-2 text-slate-600 hover:text-slate-900 font-semibold"
+            className="px-4 py-2 text-slate-500 hover:text-slate-800 font-semibold"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-5 py-2.5 bg-blue-900 hover:bg-blue-800 text-white font-bold rounded-lg transition flex items-center gap-1.5 shadow-sm"
+            className="px-5 py-2 bg-[#123B67] hover:bg-[#1D5D9B] text-white font-bold rounded-lg transition flex items-center gap-1.5 shadow-2xs"
           >
             <CheckCircle2 className="w-4 h-4" />
             <span>File Sealed Inspection Docket</span>

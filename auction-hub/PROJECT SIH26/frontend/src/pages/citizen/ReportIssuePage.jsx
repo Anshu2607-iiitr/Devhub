@@ -1,193 +1,150 @@
 import React, { useState } from 'react';
 import { 
-  FileText, Camera, MapPin, CheckCircle2, AlertTriangle, 
-  ArrowRight, ShieldCheck, Upload, AlertOctagon 
+  FileText, Camera, MapPin, Upload, 
+  CheckCircle2, ArrowRight, ShieldCheck, AlertOctagon 
 } from 'lucide-react';
-import { CITIZEN_PROJECTS_DATA } from '../../data/mockData';
+import GovernancePrincipleBanner from '../../components/GovernancePrincipleBanner';
 
 export default function ReportIssuePage({ onNavigate }) {
-  const [selectedProjectId, setSelectedProjectId] = useState(CITIZEN_PROJECTS_DATA[0].id);
-  const [category, setCategory] = useState('Work incomplete');
-  const [description, setDescription] = useState('Contractor claimed 80% work done, but only stone gravel has been dumped. No tar or bitumen laid. Road is impassable during rains.');
-  const [locationTag, setLocationTag] = useState('Namkum, Ranchi (23.3441° N, 85.3096° E)');
-  const [submitted, setSubmitted] = useState(false);
+  const [projectId, setProjectId] = useState('MPLAD-JH-2026-089');
+  const [category, setCategory] = useState('Physical Progress Gap');
+  const [description, setDescription] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [generatedId, setGeneratedId] = useState('GRV-JH-2026-9812');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newId = `GRV-JH-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-    setGeneratedId(newId);
-    setSubmitted(true);
+    setIsSubmitted(true);
   };
 
-  if (submitted) {
-    return (
-      <div className="max-w-2xl mx-auto bg-white border border-slate-200 rounded-2xl p-8 text-center space-y-5 shadow-sm">
-        <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto">
-          <CheckCircle2 className="w-10 h-10" />
-        </div>
-        <div className="space-y-1">
-          <h2 className="text-xl font-bold text-slate-900">Citizen Grievance Registered Successfully</h2>
-          <p className="text-xs text-slate-500">
-            Unique Complaint Tracking ID: <strong className="font-mono text-emerald-800 text-sm">{generatedId}</strong>
-          </p>
-        </div>
-
-        <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-left text-xs space-y-2 text-slate-700">
-          <div className="flex justify-between border-b border-slate-200 pb-1.5">
-            <span className="text-slate-500">Project Reference:</span>
-            <span className="font-mono font-bold">{selectedProjectId}</span>
-          </div>
-          <div className="flex justify-between border-b border-slate-200 pb-1.5">
-            <span className="text-slate-500">Issue Category:</span>
-            <span className="font-semibold text-amber-800">{category}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-slate-500">Credibility Score Assigned:</span>
-            <span className="font-bold text-emerald-700">85 / 100 (Verified Resident)</span>
-          </div>
-        </div>
-
-        <p className="text-[11px] text-slate-500 italic">
-          "Your report has been submitted for verification. You will be notified at each lifecycle milestone."
-        </p>
-
-        <div className="flex justify-center gap-3 pt-2">
-          <button
-            onClick={() => onNavigate('citizen-tracker')}
-            className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-xs"
-          >
-            Track Grievance Status
-          </button>
-          <button
-            onClick={() => onNavigate('citizen-home')}
-            className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs"
-          >
-            Citizen Home
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="space-y-6">
       
       {/* Header */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
+      <div className="bg-white border border-[#E4E9EF] rounded-xl p-5 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs uppercase tracking-wider">
-            <FileText className="w-4 h-4" />
-            <span>Screen 14: Citizen Grievance & Counter-Photo Filing</span>
+          <div className="flex items-center gap-2 text-[#123B67] font-bold text-xs uppercase tracking-wider">
+            <FileText className="w-4 h-4 text-[#1D5D9B]" />
+            <span>Citizen Grievance & Counter-Evidence Filing</span>
           </div>
-          <h2 className="text-base font-bold text-slate-900 mt-0.5">
-            Report Project Discrepancy or Irregularity
-          </h2>
+          <h1 className="text-base font-bold text-[#0F2942] mt-0.5">
+            Report a Stalled, Incomplete, or Quality Discrepancy Work
+          </h1>
         </div>
-        <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
-          Credibility-Weighted
-        </span>
+
+        <button
+          onClick={() => onNavigate('citizen-tracker')}
+          className="px-4 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold rounded-lg text-xs transition border border-[#E4E9EF]"
+        >
+          Track Existing Grievance
+        </button>
       </div>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs space-y-5 text-xs">
-        
-        {/* Project Picker */}
-        <div>
-          <label className="block font-bold text-slate-700 mb-1">Select Sanctioned Project in Your Area</label>
-          <select
-            value={selectedProjectId}
-            onChange={(e) => setSelectedProjectId(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-800 focus:outline-none focus:border-emerald-600 focus:bg-white"
-          >
-            {CITIZEN_PROJECTS_DATA.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.id}: {p.name} ({p.location})
-              </option>
-            ))}
-          </select>
-        </div>
+      <GovernancePrincipleBanner />
 
-        {/* 8 Issue Categories */}
-        <div>
-          <label className="block font-bold text-slate-700 mb-1">Issue Category</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-800 focus:outline-none focus:border-emerald-600 focus:bg-white"
-          >
-            <option value="Work not started">1. Work not started (Signboard erected but zero activity)</option>
-            <option value="Work delayed">2. Work delayed (Halted execution past milestone date)</option>
-            <option value="Poor quality">3. Poor quality (Substandard gravel/cement/bitumen)</option>
-            <option value="Work incomplete">4. Work incomplete (Claimed 80% on board, but left halfway)</option>
-            <option value="Suspected misuse of funds">5. Suspected misuse of funds / Diverted materials</option>
-            <option value="Incorrect project information">6. Incorrect project information</option>
-            <option value="Duplicate/reused work">7. Duplicate / reused work previously completed</option>
-            <option value="Other irregularity">8. Other ground irregularity</option>
-          </select>
+      {isSubmitted ? (
+        <div className="bg-white border border-[#C6E6E1] rounded-xl p-8 text-center space-y-4 shadow-2xs">
+          <div className="w-12 h-12 rounded-full bg-[#F0F7F6] text-[#168A78] flex items-center justify-center mx-auto">
+            <CheckCircle2 className="w-7 h-7" />
+          </div>
+          <h2 className="text-lg font-bold text-[#0F2942]">Grievance Successfully Lodged</h2>
+          <p className="text-xs text-slate-500 max-w-md mx-auto">
+            Your report has been assigned Tracking ID: <strong className="text-[#123B67] font-mono text-sm block mt-1">{generatedId}</strong>
+          </p>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => onNavigate('citizen-tracker')}
+              className="px-4 py-2 bg-[#123B67] text-white font-bold rounded-lg text-xs shadow-2xs"
+            >
+              Track Complaint Lifecycle
+            </button>
+            <button
+              onClick={() => setIsSubmitted(false)}
+              className="px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-lg text-xs"
+            >
+              Submit Another Report
+            </button>
+          </div>
         </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="bg-white border border-[#E4E9EF] rounded-xl p-6 shadow-2xs space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 block">Select MPLADS Work</label>
+              <select
+                value={projectId}
+                onChange={(e) => setProjectId(e.target.value)}
+                className="w-full bg-[#F6F8FB] border border-[#E4E9EF] rounded-lg px-3 py-2 text-xs font-semibold text-[#0F2942] focus:outline-none focus:border-[#1D5D9B]"
+              >
+                <option value="MPLAD-JH-2026-089">MPLAD-JH-2026-089: Rural Road Upgrade (Namkum)</option>
+                <option value="MPLAD-JH-2026-104">MPLAD-JH-2026-104: Community Health Sub-Centre (Murhu)</option>
+                <option value="MPLAD-JH-2026-312">MPLAD-JH-2026-312: Deep Borewell & Solar Pump (Dhanbad)</option>
+              </select>
+            </div>
 
-        {/* Description */}
-        <div>
-          <label className="block font-bold text-slate-700 mb-1">Detailed Description of Ground Reality</label>
-          <textarea
-            rows={3}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-emerald-600 focus:bg-white"
-          />
-        </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 block">Issue Category</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full bg-[#F6F8FB] border border-[#E4E9EF] rounded-lg px-3 py-2 text-xs font-semibold text-[#0F2942] focus:outline-none focus:border-[#1D5D9B]"
+              >
+                <option>Physical Progress Gap (Claimed vs Ground Reality)</option>
+                <option>Substandard Materials or Poor Quality</option>
+                <option>Work Stalled / Abandoned by Contractor</option>
+                <option>Signboard Missing / Erroneous Outlay Info</option>
+              </select>
+            </div>
+          </div>
 
-        {/* Location & GPS */}
-        <div>
-          <label className="block font-bold text-slate-700 mb-1">Location Coordinates & Landmark</label>
-          <div className="relative">
-            <MapPin className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={locationTag}
-              onChange={(e) => setLocationTag(e.target.value)}
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-slate-700 block">Detailed Description</label>
+            <textarea
+              rows={3}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe the ground observations with date and landmark references..."
+              className="w-full bg-[#F6F8FB] border border-[#E4E9EF] rounded-lg p-3 text-xs text-slate-800 focus:outline-none focus:border-[#1D5D9B]"
               required
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-emerald-600 focus:bg-white"
             />
           </div>
-        </div>
 
-        {/* Photo Upload Box */}
-        <div className="p-4 bg-emerald-50/50 border border-dashed border-emerald-300 rounded-xl space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="font-bold text-emerald-950 flex items-center gap-1.5">
-              <Camera className="w-4 h-4 text-emerald-700" />
-              <span>Upload On-Site Geo-Tagged Counter-Photograph</span>
-            </span>
-            <span className="text-[10px] text-emerald-800 font-bold bg-emerald-100 px-2 py-0.5 rounded">
-              ✓ Photo_Evidence_Namkum.jpg (2.8 MB)
-            </span>
+          <div className="p-4 bg-[#F6F8FB] border border-[#E4E9EF] rounded-xl flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-white border border-[#E4E9EF] flex items-center justify-center text-[#1D5D9B]">
+                <Camera className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="text-xs font-bold text-[#0F2942] block">Upload On-Site Counter Photographs</span>
+                <span className="text-[11px] text-slate-400">Geo-tagged photos will automatically be verified against registered GPS boundary</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-lg text-xs border border-[#E4E9EF]"
+            >
+              Choose Photos
+            </button>
           </div>
-          <p className="text-[11px] text-slate-500">
-            Ensure your photo shows the project site clearly. EXIF GPS coordinates will be verified by the AI system.
-          </p>
-        </div>
 
-        <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-          <button
-            type="button"
-            onClick={() => onNavigate('citizen-home')}
-            className="px-4 py-2 text-slate-600 font-semibold"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg transition flex items-center gap-1.5 shadow-sm"
-          >
-            <span>Submit Report for Verification</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
-
-      </form>
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => onNavigate('citizen-home')}
+              className="px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-lg text-xs"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2 bg-[#123B67] hover:bg-[#1D5D9B] text-white font-bold rounded-lg text-xs shadow-2xs flex items-center gap-1.5"
+            >
+              <span>Submit Ground Grievance</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </form>
+      )}
 
     </div>
   );
