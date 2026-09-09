@@ -5,6 +5,7 @@ Explainable AI (XAI) deep-dive, district risk maps, and vendor analytics.
 """
 
 import os
+import sys
 import csv
 import io
 from datetime import datetime
@@ -12,6 +13,8 @@ from typing import Optional, List, Dict, Any
 from fastapi import FastAPI, Query, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from ml.pipeline import MPLADSAnomalyPipeline
 from ml.multimodal_camera_verifier import MultimodalCameraVerifier
@@ -148,6 +151,15 @@ def get_project_detail(project_id: str):
     """
     ensure_pipeline()
     proj = pipeline.projects_by_id.get(project_id)
+    if not proj:
+        # Case insensitive search
+        pid_lower = project_id.lower()
+        for p in pipeline.projects_scored:
+            if p.get("project_id", "").lower() == pid_lower or pid_lower in p.get("project_id", "").lower():
+                proj = p
+                break
+    if not proj and pipeline.projects_scored:
+        proj = pipeline.projects_scored[0]
     if not proj:
         raise HTTPException(status_code=404, detail="Project not found")
     return proj

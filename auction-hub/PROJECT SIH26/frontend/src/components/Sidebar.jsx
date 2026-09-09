@@ -3,7 +3,7 @@ import {
   LayoutDashboard, FolderKanban, AlertOctagon, 
   Camera, FileText, CheckCircle2, History, Bell, 
   ShieldCheck, HardHat, Users, Bot, 
-  FileCheck, FileSearch, GitCommit, Upload, Shield, LogOut 
+  FileCheck, FileSearch, GitCommit, Upload, Shield, LogOut, Cpu 
 } from 'lucide-react';
 
 export default function Sidebar({ 
