@@ -14,6 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from ml.pipeline import MPLADSAnomalyPipeline
+from ml.multimodal_camera_verifier import MultimodalCameraVerifier
 from data_generator import LOCATIONS_BY_DISTRICT, OFFICIAL_MPS_DATA, load_official_mps
 
 app = FastAPI(
@@ -34,6 +35,7 @@ app.add_middleware(
 # Initialize ML Pipeline
 dataset_path = os.path.join(os.path.dirname(__file__), "mplads_dataset.json")
 pipeline = MPLADSAnomalyPipeline(data_file=dataset_path)
+camera_verifier = MultimodalCameraVerifier()
 
 def ensure_pipeline():
     if not pipeline.is_initialized:
@@ -612,6 +614,39 @@ def get_vendor_analytics():
 
     result.sort(key=lambda x: x["average_risk_score"], reverse=True)
     return result
+
+
+# Multimodal Camera Verification Endpoints (CV + NLP)
+class CameraVerificationRequest(BaseModel):
+    project_id: str = Field(..., example="MPLAD-JH-2026-089")
+    work_type: Optional[str] = Field(default="Road", example="Road")
+    claimed_progress_pct: float = Field(..., example=80.0)
+    contractor_claim_text: str = Field(..., example="Completed aggregate grading and 3.8 km bituminous blacktopping with dense bitumen macadam.")
+    image_meta: Optional[Dict[str, Any]] = Field(default_factory=dict)
+    official_record: Optional[Dict[str, Any]] = Field(default_factory=dict)
+
+@app.post("/api/verify/camera-stream")
+def verify_camera_submission(req: CameraVerificationRequest):
+    """
+    Executes multimodal Computer Vision + NLP verification on live camera feed or uploaded photo.
+    Reconciles signboard OCR with MoSPI records and compares contractor text against visual scene objects.
+    """
+    res = camera_verifier.verify_submission(
+        project_id=req.project_id,
+        work_type=req.work_type or "Road",
+        claimed_progress_pct=req.claimed_progress_pct,
+        contractor_claim_text=req.contractor_claim_text,
+        image_meta=req.image_meta or {},
+        official_record=req.official_record or {}
+    )
+    return res
+
+@app.get("/api/verify/sample-scenarios")
+def get_verification_scenarios():
+    """
+    Returns pre-computed multimodal test scenarios for live demonstrations.
+    """
+    return camera_verifier.get_sample_scenarios()
 
 # Production Static Build Serving
 from fastapi.staticfiles import StaticFiles
