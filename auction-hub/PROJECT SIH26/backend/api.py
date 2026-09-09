@@ -15,6 +15,10 @@ from pydantic import BaseModel, Field
 
 from ml.pipeline import MPLADSAnomalyPipeline
 from ml.multimodal_camera_verifier import MultimodalCameraVerifier
+from ml.deep_segmentation_analyzer import DeepSegmentationAnalyzer
+from ml.deep_forensics_detector import DeepForensicsDetector
+from ml.spatial_remote_sensing import SpatialRemoteSensingEngine
+from ml.multimodal_fusion_engine import MultimodalFusionEngine
 from data_generator import LOCATIONS_BY_DISTRICT, OFFICIAL_MPS_DATA, load_official_mps
 
 app = FastAPI(
@@ -36,6 +40,10 @@ app.add_middleware(
 dataset_path = os.path.join(os.path.dirname(__file__), "mplads_dataset.json")
 pipeline = MPLADSAnomalyPipeline(data_file=dataset_path)
 camera_verifier = MultimodalCameraVerifier()
+segmentation_analyzer = DeepSegmentationAnalyzer()
+forensics_detector = DeepForensicsDetector()
+spatial_engine = SpatialRemoteSensingEngine()
+fusion_engine = MultimodalFusionEngine()
 
 def ensure_pipeline():
     if not pipeline.is_initialized:
@@ -647,6 +655,99 @@ def get_verification_scenarios():
     Returns pre-computed multimodal test scenarios for live demonstrations.
     """
     return camera_verifier.get_sample_scenarios()
+
+
+# Advanced Machine Learning, Deep Learning, CV & Satellite Remote Sensing Endpoints
+class AdvancedSegmentationRequest(BaseModel):
+    work_type: str = Field(default="Road", example="Road")
+    claimed_progress_pct: float = Field(default=80.0, example=80.0)
+    image_meta: Optional[Dict[str, Any]] = Field(default_factory=dict)
+
+class AdvancedSatelliteRequest(BaseModel):
+    image_gps: Dict[str, float] = Field(..., example={"lat": 23.3441, "lng": 85.3096})
+    registered_gps: Dict[str, float] = Field(..., example={"lat": 23.3550, "lng": 85.3200})
+    work_type: str = Field(default="Road", example="Road")
+    claimed_progress_pct: float = Field(default=80.0, example=80.0)
+
+class AdvancedForensicsRequest(BaseModel):
+    project_id: str = Field(default="MPLAD-JH-2026-089", example="MPLAD-JH-2026-089")
+    image_meta: Optional[Dict[str, Any]] = Field(default_factory=dict)
+
+@app.post("/api/advanced/deep-cv-segmentation")
+def run_deep_segmentation(req: AdvancedSegmentationRequest):
+    """
+    Runs neural semantic segmentation of construction materials (Bitumen, WMM, RCC, Earthwork, etc.).
+    """
+    return segmentation_analyzer.analyze_scene_segmentation(
+        work_type=req.work_type,
+        image_meta=req.image_meta or {},
+        claimed_pct=req.claimed_progress_pct
+    )
+
+@app.post("/api/advanced/satellite-change-detection")
+def run_satellite_change_detection(req: AdvancedSatelliteRequest):
+    """
+    Calculates Sentinel-2 NDVI/NDBI remote sensing spectral change detection and corridor deviation.
+    """
+    return spatial_engine.evaluate_geospatial_and_satellite(
+        image_gps=req.image_gps,
+        registered_gps=req.registered_gps,
+        work_type=req.work_type,
+        claimed_progress_pct=req.claimed_progress_pct
+    )
+
+@app.post("/api/advanced/neural-forensics")
+def run_neural_forensics(req: AdvancedForensicsRequest):
+    """
+    Runs Error Level Analysis (ELA) and ResNet-50 512-dim embedding similarity against historical work records.
+    """
+    return forensics_detector.evaluate_image_forensics(
+        image_meta=req.image_meta or {},
+        project_id=req.project_id
+    )
+
+@app.get("/api/advanced/full-diagnostics/{project_id}")
+def get_full_advanced_diagnostics(project_id: str):
+    """
+    Returns a unified multimodal deep learning & remote sensing diagnostic report for a project.
+    """
+    # Default scenario baseline
+    work_type = "Road"
+    claimed_pct = 80.0
+    image_meta = {
+        "detected_objects": ["wet_mix_macadam", "compactor_roller", "signboard_plaque"],
+        "is_duplicate_test": (project_id == "MPLAD-JH-2026-312")
+    }
+    image_gps = {"lat": 23.3441, "lng": 85.3096}
+    reg_gps = {"lat": 23.3550, "lng": 85.3200}
+
+    if "104" in project_id:
+        work_type = "Building"
+        claimed_pct = 60.0
+        image_meta["detected_objects"] = ["brick_masonry", "rcc_columns", "scaffolding"]
+        image_gps = {"lat": 23.0748, "lng": 85.2789}
+        reg_gps = {"lat": 23.0749, "lng": 85.2790}
+    elif "312" in project_id:
+        work_type = "Water Works"
+        claimed_pct = 70.0
+        image_meta["detected_objects"] = ["solar_panel", "pump_piping"]
+        image_gps = {"lat": 23.7957, "lng": 86.4304}
+        reg_gps = {"lat": 23.7957, "lng": 86.4304}
+
+    cv_seg = segmentation_analyzer.analyze_scene_segmentation(work_type, image_meta, claimed_pct)
+    forensics = forensics_detector.evaluate_image_forensics(image_meta, project_id)
+    spatial_sat = spatial_engine.evaluate_geospatial_and_satellite(image_gps, reg_gps, work_type, claimed_pct)
+    fused = fusion_engine.compute_fused_risk(cv_seg, forensics, spatial_sat, claimed_pct)
+
+    return {
+        "project_id": project_id,
+        "work_type": work_type,
+        "claimed_progress_pct": claimed_pct,
+        "deep_cv_segmentation": cv_seg,
+        "neural_forensics": forensics,
+        "satellite_remote_sensing_and_corridor": spatial_sat,
+        "multimodal_bayesian_fusion": fused
+    }
 
 # Production Static Build Serving
 from fastapi.staticfiles import StaticFiles

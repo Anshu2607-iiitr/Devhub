@@ -17,6 +17,7 @@ export default function Sidebar({
   // Government Admin Navigation
   const adminNav = [
     { id: 'admin-dashboard', label: 'Command Hub', icon: LayoutDashboard },
+    { id: 'admin-advanced-ai', label: 'Advanced AI & Satellite Lab', icon: Cpu, badge: 'Neural Lab', badgeColor: 'bg-[#F0F7F6] text-[#168A78] border-[#C6E6E1]' },
     { id: 'admin-risk-intel', label: 'AI Risk Intelligence', icon: ShieldCheck, badge: '87/100', badgeColor: 'bg-[#FDF2F2] text-[#C95752] border-[#F8D7DA]' },
     { id: 'admin-flagged', label: 'Flagged Queue', icon: AlertOctagon, badge: '86', badgeColor: 'bg-[#FDF2F2] text-[#C95752] border-[#F8D7DA]' },
     { id: 'admin-investigation', label: 'Deep Investigation', icon: FileSearch },

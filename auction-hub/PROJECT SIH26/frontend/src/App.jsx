@@ -10,6 +10,7 @@ import AIEvidenceVerificationPage from './pages/contractor/AIEvidenceVerificatio
 
 // Government Admin Screens (Screens 5 to 10)
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import AdvancedAILabPage from './pages/admin/AdvancedAILabPage';
 import AIRiskIntelligencePage from './pages/admin/AIRiskIntelligencePage';
 import FlaggedProjectsPage from './pages/admin/FlaggedProjectsPage';
 import ProjectInvestigationPage from './pages/admin/ProjectInvestigationPage';
@@ -160,6 +161,9 @@ export default function App() {
             {/* GOVERNMENT ADMIN SCREENS (5 to 10) */}
             {activeNav === 'admin-dashboard' && (
               <AdminDashboardPage onNavigate={setActiveNav} />
+            )}
+            {activeNav === 'admin-advanced-ai' && (
+              <AdvancedAILabPage onNavigate={setActiveNav} />
             )}
             {activeNav === 'admin-risk-intel' && (
               <AIRiskIntelligencePage onNavigate={setActiveNav} />
