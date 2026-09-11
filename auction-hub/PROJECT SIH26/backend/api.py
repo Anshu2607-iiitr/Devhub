@@ -298,6 +298,7 @@ def export_projects_csv(
         }
     )
 
+@app.get("/api/summary")
 @app.get("/api/analytics/summary")
 @app.get("/api/dashboard/summary")
 def get_summary_analytics():

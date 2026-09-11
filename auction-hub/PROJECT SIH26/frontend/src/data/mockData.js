@@ -442,3 +442,15 @@ export const AUDIT_TRAIL_RECORDS = [
     approval: "SUB-CON-2026-089-M3"
   }
 ];
+
+export const AUDIT_TRAIL_DATA = AUDIT_TRAIL_RECORDS;
+export const PRIORITY_RISK_PROJECTS = FLAGGED_PROJECTS_DATA;
+export const GOV_SUMMARY = ADMIN_KPI_DATA;
+export const CONTRACTORS_DATA = [CONTRACTOR_DATA.profile];
+export const CITIZEN_FEEDBACK_DATA = CITIZEN_COMPLAINTS_LIST;
+export const RISK_SIGNAL_BREAKDOWN = [
+  { signal: "Computer Vision Disparity", weight: "35%", score: 88, status: "High Discrepancy" },
+  { signal: "Geospatial Boundary Check", weight: "25%", score: 72, status: "Moderate Deviation" },
+  { signal: "Financial Pacing", weight: "20%", score: 65, status: "Acceptable" },
+  { signal: "Citizen Sentiment & Reports", weight: "20%", score: 84, status: "Adverse Ground Feed" }
+];
